@@ -1,7 +1,7 @@
 # Roam
 
 A national parks trip planning chatbot powered by RAG (Retrieval-Augmented Generation).
-Ask about trails, permits, weather, and get help planning itineraries across 20 US national parks.
+Ask about trails, permits, weather, and get help planning itineraries across 10 US national parks.
 
 ## Tech stack
 - **RAG**: LangChain + pgvector
