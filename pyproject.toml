@@ -1,0 +1,30 @@
+[project]
+name = "roam"
+version = "0.1.0"
+description = "A national parks trip planning chatbot powered by RAG"
+authors = [
+    {name = "tiiarikama",email = "tiiarikama@hotmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "langchain (==0.2.16)",
+    "langchain-openai (==0.1.23)",
+    "langchain-postgres (==0.0.12)",
+    "psycopg2-binary (==2.9.9)",
+    "pgvector (>=0.2.5,<0.3.0)",
+    "openai (==1.40.0)",
+    "python-dotenv (==1.0.1)",
+    "requests (==2.32.3)",
+    "tiktoken (==0.7.0)",
+    "fastapi (==0.112.0)",
+    "uvicorn (==0.30.6)",
+    "streamlit (==1.37.0)"
+]
+
+[tool.poetry]
+packages = [{include = "roam", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
