@@ -9,8 +9,8 @@ def _nps_get(endpoint: str, params: dict) -> dict:
     response.raise_for_status()
     return response.json()
 
-# NPS API call for core park metadata and description
-def fecth_park_info(park_code: str) -> dict:
+# endpoint handler for NPS API /parks: core park metadata and description
+def fetch_park_info(park_code: str) -> dict:
     response = _nps_get("parks", {"parkCode": park_code, "limit": 1})
 
     if not response["data"]:
@@ -32,3 +32,18 @@ def fecth_park_info(park_code: str) -> dict:
         "operating_hours": park_data.get("operatingHours", []),
     }
 
+# endpoint handler for NPS API /alerts: active alers (closures, hazards, notices)
+def fetch_alerts(park_code: str) -> list[dict]:
+    response = _nps_get("alerts", {"parkCode": park_code, "limit": 50})
+
+    alerts = []
+
+    for alert in response.get("data", []):
+        alerts.append({
+            "title": alert.get("title", ""),
+            "description": alert.get("description", ""),
+            "category": alert.get("category", ""),
+            "url": alert.get("url", "")
+        })
+    
+    return alerts
