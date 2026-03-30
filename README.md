@@ -54,10 +54,37 @@ streamlit run app/main.py
 ## Project structure
 ```
 roam/
-├── parks/          # Hand-curated markdown park documents
-├── ingestion/      # Data pipeline: fetch → chunk → embed → store
-├── rag/            # Retrieval layer: query router, retriever, chain
-└── app/            # Streamlit frontend
+├── .env.example
+├── .gitignore
+├── README.md
+├── pyproject.toml
+├── poetry.lock
+├── parks/                  # Hand-curated markdown park documents
+│   └── yose.md
+├── src/
+│   └── roam/
+│       ├── __init__.py
+│       ├── config.py
+│       ├── db/             # Data pipeline: fetch → chunk → embed → store
+│       │   ├── __init__.py
+│       │   ├── schema.py
+│       │   ├── fetcher.py
+│       │   ├── chunker.py
+│       │   ├── embedder.py
+│       │   ├── md_loader.py
+│       │   └── runner.py
+│       ├── rag/            # Retrieval layer: query router, retriever, chain
+│       │   ├── __init__.py
+│       │   ├── router.py
+│       │   ├── retriever.py
+│       │   └── chain.py
+│       └── app/            # Streamlit frontend
+│           ├── __init__.py
+│           └── main.py
+└── tests/
+    ├── __init__.py
+    ├── test_chunker.py
+    └── test_retriever.py
 ```
 
 ## Data sources
