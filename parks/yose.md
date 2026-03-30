@@ -1,5 +1,4 @@
 <!-- park_code: yose -->
-<!-- park_name: Yosemite National Park -->
 
 # Yosemite National Park
 
@@ -631,7 +630,7 @@ Most of the park is covered in snow during winter, but some trails in Yosemite V
 
 ### YARTS Bus
 Year-round bus service from Merced (Amtrak connection) and seasonal service
-from Fresno and Mammoth Lakes. Riders bypass timed entry permit requirement.
+from Fresno and Mammoth Lakes. Riders bypass timed entry permit requirement when one is in place.
 Book at yarts.com. Strongly recommended during summer.
 
 ### Getting Around Inside the Park
