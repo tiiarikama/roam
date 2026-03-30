@@ -19,7 +19,8 @@ dependencies = [
     "tiktoken (==0.7.0)",
     "fastapi (==0.112.0)",
     "uvicorn (==0.30.6)",
-    "streamlit (==1.37.0)"
+    "streamlit (==1.37.0)",
+    "beautifulsoup4 (>=4.14.3,<5.0.0)"
 ]
 
 [tool.poetry]
