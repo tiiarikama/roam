@@ -30,16 +30,27 @@ NPS_BASE_URL = "https://developer.nps.gov/api/v1"
 
 #available parks
 PARK_METADATA = {
-    "yose": "Yosemite National Park, California",
-    "grca": "Grand Canyon National Park, Arizona",
-    "zion": "Zion National Park, Utah",
-    "olym": "Olympic National Park, Washington",
-    "romo": "Rocky Mountain National Park, Colorado",
-    "acad": "Acadia National Park, Maine",
-    "yell": "Yellowstone National Park, Wyoming",
-    "grte": "Grand Teton National Park, Wyoming",
-    "jotr": "Joshua Tree National Park, California",
-    "glac": "Glacier National Park, Montana",
+    "grca": "Grand Canyon National Park (Arizona)",
+    "jotr": "Joshua Tree National Park (California)",
+    "yose": "Yosemite National Park (California)",
+    "romo": "Rocky Mountain National Park (Colorado)",
+    "acad": "Acadia National Park (Maine)",
+    "glac": "Glacier National Park (Montana)",
+    "zion": "Zion National Park (Utah)",
+    "olym": "Olympic National Park (Washington)",
+    "yell": "Yellowstone National Park (Wyoming)",
+    "grte": "Grand Teton National Park (Wyoming)",
+}
+
+PARKS_BY_STATE = {
+    "Arizona": ["Grand Canyon National Park"],
+    "California": ["Joshua Tree National Park", "Yosemite National Park"],
+    "Colorado": ["Rocky Mountain National Park"],
+    "Maine": ["Acadia National Park"],
+    "Montana": ["Glacier National Park"],
+    "Utah": ["Zion National Park"],
+    "Washington": ["Olympic National Park"],
+    "Wyoming": ["Yellowstone National Park", "Grand Teton National Park"],
 }
 
 # extracted park codes
