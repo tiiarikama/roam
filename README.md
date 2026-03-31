@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="static/logo.svg" alt="Roam" width="300">
+  <img src="static/logo.svg" alt="Roam" width="500">
 </p>
 
 Roam - A national parks trip planning chatbot powered by RAG (Retrieval-Augmented Generation).
