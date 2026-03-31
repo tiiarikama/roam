@@ -25,16 +25,19 @@ TOP_K_RESULTS = 5
 # NPS
 NPS_BASE_URL = "https://developer.nps.gov/api/v1"
 
-# available parks
-TARGET_PARKS = [
-    "yose",  # Yosemite
-    "grca",  # Grand Canyon
-    "zion",  # Zion
-    "olym",  # Olympic
-    "romo",  # Rocky Mountain
-    "acad",  # Acadia
-    "yell",  # Yellowstone
-    "grte",  # Grand Teton
-    "jotr",  # Joshua Tree
-    "glac",  # Glacier
-]
+#available parks
+PARK_METADATA = {
+    "yose": "Yosemite National Park, California",
+    "grca": "Grand Canyon National Park, Arizona",
+    "zion": "Zion National Park, Utah",
+    "olym": "Olympic National Park, Washington",
+    "romo": "Rocky Mountain National Park, Colorado",
+    "acad": "Acadia National Park, Maine",
+    "yell": "Yellowstone National Park, Wyoming",
+    "grte": "Grand Teton National Park, Wyoming",
+    "jotr": "Joshua Tree National Park, California",
+    "glac": "Glacier National Park, Montana",
+}
+
+# extracted park codes
+TARGET_PARKS = list(PARK_METADATA.keys())
