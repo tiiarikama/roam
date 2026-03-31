@@ -63,3 +63,47 @@ def chunk_park_info(park_info: dict) -> list[dict]:
     
     return chunks
     
+# chunks alerts individually
+def chunk_alerts(alerts: list[dict], park_code: str, park_name: str) -> list[dict]:
+    chunks = []
+
+    for alert in alerts:
+        if not alert.get("title") and not alert.get("description"):
+            continue
+
+        text = f"[{alert.get("category", "Alert")}] {alert.get("title", "")}\n{alert.get("description", "")}"
+
+        if alert.get("url"):
+            text += f"\nMore info at: {alert["url"]}"
+        
+        alert_chunk = _make_chunk(park_code, park_name, "alert", text,
+                                  {"source": "nps_api", "section": "alert", "category": alert.get("category")})
+        chunks.append(alert_chunk)
+    
+    return chunks
+
+# chunks each visitor center individually
+def chunk_visitor_centers(visitor_centers: list[dict], park_code: str, park_name: str) -> list[dict]:
+    chunks = []
+
+    for vc in visitor_centers:
+        if not vc.get("name"):
+            continue
+
+        lines = [f"{vc["name"]} - Visitor Center"]
+        if vc.get("description"):
+            lines.append(vc["description"])
+        if vc.get("directions"):
+            lines.append(f"Directions: {vc["directions"]}")
+        if vc.get("amenities"):
+            lines.append(f"Amenities: {vc["amenities"]}")
+        if vc.get("operating_hours"):
+            for hours in vc["operating_hours"]:
+                lines.append(f"Hours: {hours["description"]}")
+        
+        vc_chunk = _make_chunk(park_code, park_name, "visitor_center", "\n".join(lines),
+                               {"source": "nps_api", "section": "visitor_center", "name": vc["name"]})
+        
+        chunks.append(vc_chunk)
+    
+    return chunks
