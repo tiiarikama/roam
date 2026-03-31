@@ -86,7 +86,7 @@ def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = Non
         print(f"Chain error occurred: {e}")
         return "Sorry, I'm having trouble generating a response right now. Please try again."
     
-    return response.choices[0].message.content
+    return response.choices[0].message.content, park_codes
 
 if __name__ == "__main__":
     test_queries = [
