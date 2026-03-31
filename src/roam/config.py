@@ -10,9 +10,11 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 NPS_API_KEY = os.getenv("NPS_API_KEY")
 
-# embedding
-
+# models
 EMBEDDING_MODEL = 'text-embedding-3-small'
+LLM_MODEL = "gpt-4o-mini"
+
+# embedding
 EMBEDDING_DIMENSIONS = 1536
 
 # chunking
@@ -21,6 +23,7 @@ CHUNK_OVERLAP = 80
 
 # retrieval
 TOP_K_RESULTS = 5
+
 
 # NPS
 NPS_BASE_URL = "https://developer.nps.gov/api/v1"
