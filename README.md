@@ -1,6 +1,8 @@
-# Roam
+<p align="center">
+  <img src="static/logo.svg" alt="Roam" width="300">
+</p>
 
-A national parks trip planning chatbot powered by RAG (Retrieval-Augmented Generation).
+Roam - A national parks trip planning chatbot powered by RAG (Retrieval-Augmented Generation).
 Ask about trails, permits, weather, and get help planning itineraries across 10 US national parks.
 
 ## Tech stack
