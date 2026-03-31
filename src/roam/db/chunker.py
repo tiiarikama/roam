@@ -149,3 +149,15 @@ def chunk_campgrounds(campgrounds: list[dict], park_code: str, park_name: str) -
     return chunks
 
 # converts all fetched park data into chunks
+def chunk_all(park_data: dict) -> list[dict]:
+    park_info = park_data["park_info"]
+    park_code = park_info["park_code"]
+    park_name = park_info["name"]
+
+    chunks = []
+    chunks.extend(chunk_park_info(park_info))
+    chunks.extend(chunk_alerts(park_data["alerts"], park_code, park_name))
+    chunks.extend(chunk_visitor_centers(park_data["visitor_centers"], park_code, park_name))
+    chunks.extend(chunk_campgrounds(park_data["campgrounds"], park_code, park_name))
+
+    return chunks
