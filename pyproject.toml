@@ -8,19 +8,20 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
 dependencies = [
-    "langchain (==0.2.16)",
-    "langchain-openai (==0.1.23)",
-    "langchain-postgres (==0.0.12)",
+    "langchain (>=1.2.13,<2.0.0)",
+    "langchain-openai (>=1.1.12,<2.0.0)",
+    "langchain-postgres (>=0.0.17,<0.0.18)",
     "psycopg2-binary (==2.9.9)",
     "pgvector (>=0.2.5,<0.3.0)",
-    "openai (==1.40.0)",
+    "openai (>=2.30.0,<3.0.0)",
     "python-dotenv (==1.0.1)",
     "requests (==2.32.3)",
     "tiktoken (==0.7.0)",
     "fastapi (==0.112.0)",
     "uvicorn (==0.30.6)",
     "streamlit (==1.37.0)",
-    "beautifulsoup4 (>=4.14.3,<5.0.0)"
+    "beautifulsoup4 (>=4.14.3,<5.0.0)",
+    "langchain-core (>=1.2.23,<2.0.0)"
 ]
 
 [tool.poetry]
