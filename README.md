@@ -4,16 +4,18 @@ A national parks trip planning chatbot powered by RAG (Retrieval-Augmented Gener
 Ask about trails, permits, weather, and get help planning itineraries across 10 US national parks.
 
 ## Tech stack
-- **RAG**: LangChain + pgvector
+
 - **Embeddings**: OpenAI text-embedding-3-small
-- **LLM**: Anthropic Claude
-- **Backend**: FastAPI
+- **LLM**: OpenAI gpt-4o-mini
+- **Vector DB**: PostgreSQL + pgvector
 - **Frontend**: Streamlit
-- **Database**: PostgreSQL + pgvector
+- **Dependency Management**: Poetry
+- **Python**: 3.12
 
 ## Setup
 
 ### 1. Clone and install dependencies
+
 ```bash
 git clone https://github.com/yourusername/roam.git
 cd roam
@@ -21,44 +23,55 @@ poetry install
 ```
 
 ### 2. Activate the environment
+
 ```bash
 source $(poetry env info --path)/bin/activate
 ```
 
 ### 3. Configure environment
+
 ```bash
 cp .env.example .env
 # Edit .env with your API keys and database URL
 ```
 
 ### 4. Set up the database
+
 ```bash
-createdb national_parks_rag
-python -m ingestion.schema
+createdb roam_dev
+python -m roam.db.schema
 ```
 
 ### 5. Run ingestion
+
 ```bash
 # Ingest all parks
-python -m ingestion.runner
+python -m roam.db.runner
 
 # Or test with a single park first
-python -m ingestion.runner yose
+python -m roam.db.runner yose
 ```
 
 ### 6. Run the app
+
 ```bash
-streamlit run app/main.py
+streamlit run src/roam/app/main.py
 ```
 
 ## Project structure
+
 ```
 roam/
 ├── .env.example
 ├── .gitignore
+├── .streamlit/
+│   └── config.toml
 ├── README.md
 ├── pyproject.toml
 ├── poetry.lock
+├── static/                 # Logo and favicon
+│   ├── logo.svg
+│   └── favicon.png
 ├── parks/                  # Hand-curated markdown park documents
 │   └── yose.md
 ├── src/
@@ -88,5 +101,6 @@ roam/
 ```
 
 ## Data sources
-- [NPS API](https://www.nps.gov/subjects/developer/index.htm) — park info, alerts, visitor centers
-- Hand-curated markdown docs — trails, permits, seasonal access
+
+- [NPS API](https://www.nps.gov/subjects/developer/index.htm) — park info, alerts, visitor centers, campgrounds
+- Hand-curated markdown docs — trails, permits, seasonal access, practical tips
