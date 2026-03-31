@@ -31,8 +31,11 @@ def build_context(chunks: list[dict]) -> str:
     return "\n\n---\n\n".join(sections)
 
 # full RAG chain: detect_park -> retrieve relevant chunks -> generate answer
-def ask(query: str) -> str:
+def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = None) -> str:
     park_codes = detect_park(query)
+
+    if not park_codes and last_park_codes:
+        park_codes = last_park_codes
 
     if not park_codes:
         park_list = "\n".join(
@@ -42,7 +45,8 @@ def ask(query: str) -> str:
         return (
             f"Your question doesn't seem to be about any US national parks. I'd be happy to help you plan a trip to any of these destinations:\n\n"
             f"{park_list}\n\n"
-            "Which park would you like to know more about?"
+            "Which park would you like to know more about?",
+            [],
         )
 
     all_chunks = []
@@ -56,25 +60,27 @@ def ask(query: str) -> str:
     park_names = ", ".join(PARK_METADATA[code] for code in park_codes)
     context = build_context(all_chunks)
 
-    final_prompt = f"""
+    context_prompt = f"""
     Here is the most relevant information about {park_names}:
     {context}
 
     ---
 
-    Question: {query}
-
     Answer only based on the information provided above.
     """
+
+    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+
+    if history:
+        messages.extend(history)
+
+    messages.append({"role": "user", "content": f"{context_prompt}\n\nQuestion: {query}"})
 
     try:
         response = client.chat.completions.create(
             model=LLM_MODEL,
             max_tokens = 1024,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": final_prompt},
-            ],
+            messages=messages,
         )
     except Exception as e:
         print(f"Chain error occurred: {e}")
