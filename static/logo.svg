@@ -1,0 +1,36 @@
+<svg width="100%" viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="clipSunset"><circle cx="340" cy="185" r="110"/></clipPath>
+    <linearGradient id="fullGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fde8c0"/>
+      <stop offset="25%" stop-color="#fbc98a"/>
+      <stop offset="48%" stop-color="#f4a259"/>
+      <stop offset="62%" stop-color="#e8845a"/>
+      <stop offset="75%" stop-color="#d4704a"/>
+      <stop offset="88%" stop-color="#b85540"/>
+      <stop offset="100%" stop-color="#8a3a28"/>
+    </linearGradient>
+    <radialGradient id="sunHalo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fffbf0" stop-opacity="1"/>
+      <stop offset="25%" stop-color="#fff5dc" stop-opacity="0.85"/>
+      <stop offset="50%" stop-color="#fdebc8" stop-opacity="0.35"/>
+      <stop offset="75%" stop-color="#fdebc8" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#fdebc8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="340" cy="185" r="110" fill="#f4a259"/>
+
+  <g clip-path="url(#clipSunset)">
+    <rect x="230" y="75" width="220" height="220" fill="url(#fullGrad)"/>
+    <ellipse cx="340" cy="178" rx="48" ry="48" fill="url(#sunHalo)"/>
+    <path d="M230,218 L262,168 L282,185 L316,138 L350,178 L373,158 L406,192 L450,218 Z" fill="#6b2510"/>
+    <path d="M230,218 L245,203 L252,218 L260,199 L268,218 L278,196 L286,218 L296,200 L304,218 L314,202 L322,218 L334,200 L342,218 L355,203 L363,218 L374,197 L382,218 L394,201 L403,218 L415,197 L424,218 L450,218 Z" fill="#5a1e0e" opacity="0.9"/>
+    <text x="340" y="258" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="500" fill="#fdf3e0" letter-spacing="8">ROAM</text>
+  </g>
+
+  <circle cx="340" cy="185" r="110" fill="none" stroke="#c45e30" stroke-width="1.5"/>
+  <circle cx="340" cy="185" r="116" fill="none" stroke="#f4a259" stroke-width="0.5" opacity="0.5"/>
+
+  <text x="340" y="335" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="400" letter-spacing="3" fill="#c45e30">plan your next adventure</text>
+</svg>
