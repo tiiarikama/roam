@@ -107,3 +107,45 @@ def chunk_visitor_centers(visitor_centers: list[dict], park_code: str, park_name
         chunks.append(vc_chunk)
     
     return chunks
+
+# chunks capmgrounds individually
+def chunk_campgrounds(campgrounds: list[dict], park_code: str, park_name: str) -> list[dict]:
+    chunks = []
+
+    for cg in campgrounds:
+        if not cg.get("name"):
+            continue
+
+        lines = [f"{cg['name']} — Campground"]
+
+        if cg.get("description"):
+            lines.append(cg["description"])
+        if cg.get("reservation_info"):
+            lines.append(f"Reservations: {cg['reservation_info']}")
+        if cg.get("fees"):
+            for fee in cg["fees"]:
+                lines.append(f"Fee: {fee.get('title', '')}: ${fee.get('cost', '')}")
+        if cg.get("campsites"):
+            cs = cg["campsites"]
+            lines.append(f"Total sites: {cs.get('totalSites', 'unknown')}")
+        amenities = cg.get("amenities", {})
+        if amenities.get("potableWater"):
+            lines.append(f"Potable water: {amenities['potableWater'][0] if amenities['potableWater'] else 'unknown'}")
+        if amenities.get("toilets"):
+            lines.append(f"Toilets: {amenities['toilets'][0] if amenities['toilets'] else 'unknown'}")
+        if amenities.get("cellPhoneReception"):
+            lines.append(f"Cell reception: {amenities['cellPhoneReception']}")
+        if cg.get("operating_hours"):
+            for hours in cg["operating_hours"]:
+                if hours.get("description"):
+                    lines.append(f"Season: {hours['description']}")
+        if cg.get("reservation_url"):
+            lines.append(f"Reserve at: {cg['reservation_url']}")
+        
+        cg_chunk = _make_chunk(park_code, park_name, "campground", "\n".join(lines),
+                               {"source": "nps_api", "section": "campground", "name": cg["name"]})
+        chunks.append(cg_chunk)
+    
+    return chunks
+
+# converts all fetched park data into chunks
