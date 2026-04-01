@@ -2,6 +2,7 @@ from openai import OpenAI
 from roam.config import OPENAI_API_KEY, LLM_MODEL, PARK_METADATA, PARKS_BY_STATE
 from roam.rag.retriever import retrieve
 from roam.rag.router import detect_park
+from datetime import date
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -18,7 +19,11 @@ When answering:
 - If safety is relevant, mention it clearly
 - Keep your answers concise but complete
 - Never reveal internal logic
-- Never respond the queries that are not about US national parks"""
+- Never respond the queries that are not about US national parks
+
+Today's date is {current_date}. Use this to provide seasonally appropriate advice — recommend trails and activities that are accessible right now,
+warn about current seasonal closures or conditions, and suggest the best activities for this time of year.
+"""
 
 # formats retrieved chunks into a context string for prompting
 def build_context(chunks: list[dict]) -> str:
@@ -32,6 +37,7 @@ def build_context(chunks: list[dict]) -> str:
 
 # full RAG chain: detect_park -> retrieve relevant chunks -> generate answer
 def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = None) -> str:
+    dated_system_prompt = SYSTEM_PROMPT.format(current_date=date.today().strftime("%B %d, %Y"))
     park_codes = detect_park(query)
 
     if not park_codes and last_park_codes:
@@ -69,7 +75,7 @@ def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = Non
     Answer only based on the information provided above.
     """
 
-    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    messages = [{"role": "system", "content": dated_system_prompt}]
 
     if history:
         messages.extend(history)
