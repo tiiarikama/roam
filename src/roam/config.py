@@ -21,8 +21,12 @@ EMBEDDING_DIMENSIONS = 1536
 CHUNK_SIZE = 400
 CHUNK_OVERLAP = 80
 
+#routing
+INTENT_CATEGORIES = ("park_specific", "comparative", "general_parks", "off_topic")
+
 # retrieval
 TOP_K_RESULTS = 5
+TOP_K_GLOBAL = 10
 
 
 # NPS
