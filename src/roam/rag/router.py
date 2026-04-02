@@ -1,30 +1,76 @@
+import json
 from openai import OpenAI
-from roam.config import OPENAI_API_KEY, LLM_MODEL, TARGET_PARKS, PARK_METADATA
+from roam.config import OPENAI_API_KEY, LLM_MODEL, TARGET_PARKS, PARK_METADATA, INTENT_CATEGORIES
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 ROUTER_PROMPT = """
-You are a national park query router. Given a user question, your job is to identify which national park the 
-user query is about.
+You are a query router for a national parks trip planning assistant. Given a user question, 
+classify the intent and identify which park(s) it relates to.
 
 AVAILABLE PARKS:
 {parks}
 
+INTENT CATEGORIES:
+- park_specific: Question about one or more specific parks (e.g. "What permits do I need for Half Dome?", "Is Yellowstone open in winter?")
+- comparative: Comparing parks or asking which park is best for something (e.g. "Does Yosemite or Grand Canyon have better hiking?", "Which park has the best hiking?")
+- general_parks: General national park question not about a specific park (e.g. "What should I pack for a national park trip?")
+- off_topic: Not related to US national parks at all (e.g. "What's the weather in Paris?")
+
 RULES:
-- If the question is clearly about one specific park, return only that park's code
-- If the question mentions multiple parks, return all relevant codes comma-separated
-- If the question is general and not about a specific park, return "none"
-- Return only the park code(s) or "none" — no explanation
+- If a query mentions a specific park by name, it is park_specific — not general_parks
+- For park_specific, return the relevant park code(s)
+- For comparative with specific parks mentioned, return those park codes
+- For comparative without specific parks, general_parks, and off_topic, return an empty parks array
 
 EXAMPLES:
-"How do I get a Half Dome permit?" → yose
-"What trails are at the Grand Canyon?" → grca
-"Compare Zion and Yosemite for hiking" → zion,yose
-"Which park is best for wildlife?" → none
+"What permits do I need for Half Dome?"
+intent: park_specific
+parks: yose
+
+"Compare Zion and Yosemite for hiking"
+intent: comparative
+parks: zion,yose
+
+"Which park is best for wildlife?"
+intent: comparative
+parks: none
+
+"What should I bring on a hike?"
+intent: general_parks
+parks: none
+
+"What's the best restaurant in NYC?"
+intent: off_topic
+parks: none
 """
 
-# detects which park(s) a user query is about
-def detect_park(query: str) -> list[str]:
+ROUTER_RESPONSE_FORMAT = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "route_response",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "properties": {
+                "intent": {
+                    "type": "string",
+                    "enum": list(INTENT_CATEGORIES),
+                },
+                "parks": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                },
+            },
+            "required": ["intent", "parks"],
+            "additionalProperties": False,
+        },
+    },
+}
+
+
+# classifies query intent and detects relevant park(s)
+def route_query(query: str) -> dict:
     parks_list = "\n".join(f"- {code}: {name}" for code, name in PARK_METADATA.items())
 
     try:
@@ -42,24 +88,16 @@ def detect_park(query: str) -> list[str]:
                     "content": query,
                 },
             ],
+            response_format=ROUTER_RESPONSE_FORMAT,
         )
     except Exception as e:
         print(f"Router error occurred: {e}")
-        return []
+        return {"intent": "general_parks", "parks": []}
     
-    result = response.choices[0].message.content.strip().lower()
+    result = json.loads(response.choices[0].message.content)
+    result["parks"] = [code for code in result["parks"] if code in TARGET_PARKS]
 
-    if result == "none" or not result:
-        return []
-    
-    codes = [code.strip() for code in result.split(",")]
-    valid_codes = []
-
-    for code in codes:
-        if code in TARGET_PARKS:
-            valid_codes.append(code)
-
-    return valid_codes
+    return result
 
 if __name__ == "__main__":
     test_queries = [
@@ -68,12 +106,13 @@ if __name__ == "__main__":
         "What are the best trails at the Grand Canyon?",
         "Compare Zion and Yosemite for hiking",
         "Which park is best for wildlife watching?",
+        "What should I pack for a national park trip?",
         "Is Yellowstone open in winter?",
-        "What should I pack for a trip to Acadia?", 
+        "What's the best pizza in New York?",
     ]
 
     for query in test_queries:
-        parks = detect_park(query)
+        result = route_query(query)
         print(f"Q: {query}")
-        print(f"   → {parks if parks else 'no park detected'}")
+        print(f"   → intent: {result['intent']}, parks: {result['parks']}")
         print()

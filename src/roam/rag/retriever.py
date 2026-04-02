@@ -17,27 +17,44 @@ def embed_query(user_query: str) -> list[float]:
 
     return response.data[0].embedding
 
-# retrieves the k most semantically similar chunks to a user query
-def retrieve(user_query: str, park_code: str, top_k: int = TOP_K_RESULTS) -> list[dict]:
+# retrieves the k most semantically similar chunks to a user query, when park code is None searches across all parks
+def retrieve(user_query: str, park_code: str = None, top_k: int = TOP_K_RESULTS) -> list[dict]:
     query_embedding = embed_query(user_query)
-    sql_query = """
-                SELECT
-                    park_code,
-                    park_name,
-                    content_type,
-                    chunk_text,
-                    metadata,
-                    1 - (embedding <=> %s::vector) AS similarity
-                FROM park_chunks
-                WHERE park_code = %s
-                ORDER BY embedding <=> %s::vector
-                LIMIT %s
-    """
+
+    if park_code:     
+        sql_query = """
+                    SELECT
+                        park_code,
+                        park_name,
+                        content_type,
+                        chunk_text,
+                        metadata,
+                        1 - (embedding <=> %s::vector) AS similarity
+                    FROM park_chunks
+                    WHERE park_code = %s
+                    ORDER BY embedding <=> %s::vector
+                    LIMIT %s
+        """
+        params = [query_embedding, park_code, query_embedding, top_k]
+    else:
+        sql_query = """
+                    SELECT
+                        park_code,
+                        park_name,
+                        content_type,
+                        chunk_text,
+                        metadata,
+                        1 - (embedding <=> %s::vector) AS similarity
+                    FROM park_chunks
+                    ORDER BY embedding <=> %s::vector
+                    LIMIT %s
+        """
+        params = [query_embedding, query_embedding, top_k]
 
     connection = connect()
     try:
         with connection.cursor() as cur:
-            cur.execute(sql_query, [query_embedding, park_code, query_embedding, top_k])
+            cur.execute(sql_query, params)
             rows = cur.fetchall()
             return [
                 {
@@ -55,19 +72,16 @@ def retrieve(user_query: str, park_code: str, top_k: int = TOP_K_RESULTS) -> lis
 
 if __name__ == '__main__':
     test_queries = [
-        "What permits do I need to hike Half Dome?",
-        "Are there road closures at Yosemite?",
-        "Where can I camp in Yosemite Valley?",
-        "What is the best time to see waterfalls?",
-        "Is there cell service in the park?",
+        ("What permits do I need to hike Half Dome?", "yose"),
+        ("Where can I camp in Yosemite Valley?", "yose"),
+        ("Which park has the best hiking?", None),
     ]
 
-    for query in test_queries:
-        print(f"\nQuery: {query}")
+    for query, park_code in test_queries:
+        print(f"\nQuery: {query} (park: {park_code or 'all'})")
         print("-" * 60)
-        results = retrieve(query, park_code="yose")
+        results = retrieve(query, park_code=park_code)
         for result in results[:3]:
-            print(f"  [{result['similarity']}] {result['content_type']} | {result['metadata'].get('section', '')}")
+            print(f"  [{result['similarity']}] {result['park_code']} | {result['content_type']} | {result['metadata'].get('section', '')}")
             print(f"  {result['chunk_text'][:150]}...")
             print()
-
