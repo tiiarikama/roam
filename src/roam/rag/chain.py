@@ -112,11 +112,36 @@ def generate_response(query: str, chunks: list[dict], park_codes: list[str],
 
     return response.choices[0].message.content
 
+def generate_greeting(query: str, system_prompt: str, history: list[dict] = None) -> str:
+    messages = [{"role": "system", "content": system_prompt}]
+
+    if history:
+        messages.extend(history)
+
+    messages.append({"role": "user", "content": query})
+
+    response = client.chat.completions.create(
+        model=LLM_MODEL,
+        max_tokens=256,
+        messages=messages,
+    )
+
+    return response.choices[0].message.content
+
 # full RAG chain: detect query intent and park codes -> retrieve relevant chunks -> generate answer
 def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = None) -> str:
     dated_system_prompt = SYSTEM_PROMPT.format(current_date=date.today().strftime("%B %d, %Y"))
     
     intent, park_codes = resolve_route(query, last_park_codes)
+
+    if intent == "greeting":
+        try:
+            answer = generate_greeting(query, dated_system_prompt, history)
+            return answer, last_park_codes or []
+        except Exception as e:
+            print(f"Chain error occurred: {e}")
+            return "Sorry, I'm having trouble right now. Please try again.", last_park_codes or []
+
 
     if intent == "off_topic":
         park_list = "\n".join(
@@ -143,7 +168,7 @@ def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = Non
         answer = generate_response(query, all_chunks, park_codes, dated_system_prompt, history)
     except Exception as e:
         print(f"Chain error occurred: {e}")
-        return "Sorry, I'm having trouble generating a response right now. Please try again."
+        return "Sorry, I'm having trouble generating a response right now. Please try again.", park_codes
     
     return answer, park_codes
 

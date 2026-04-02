@@ -15,6 +15,7 @@ INTENT CATEGORIES:
 - park_specific: Question about one or more specific parks (e.g. "What permits do I need for Half Dome?", "Is Yellowstone open in winter?")
 - comparative: Comparing parks or asking which park is best for something (e.g. "Does Yosemite or Grand Canyon have better hiking?", "Which park has the best hiking?")
 - general_parks: General national park question not about a specific park (e.g. "What should I pack for a national park trip?")
+- greeting: Greetings, thanks, casual conversation, or brief reactions to a previous answer (e.g. "Hey!", "Thanks that's helpful", "Great!", "Hello, can you help me?")
 - off_topic: Not related to US national parks at all (e.g. "What's the weather in Paris?")
 
 RULES:
@@ -38,6 +39,10 @@ parks: none
 
 "What should I bring on a hike?"
 intent: general_parks
+parks: none
+
+"Thanks, that's really helpful!"
+intent: greeting
 parks: none
 
 "What's the best restaurant in NYC?"

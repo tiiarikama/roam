@@ -22,7 +22,7 @@ CHUNK_SIZE = 400
 CHUNK_OVERLAP = 80
 
 #routing
-INTENT_CATEGORIES = ("park_specific", "comparative", "general_parks", "off_topic")
+INTENT_CATEGORIES = ("park_specific", "comparative", "general_parks", "greeting" "off_topic")
 
 # retrieval
 TOP_K_RESULTS = 5
