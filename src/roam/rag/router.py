@@ -12,12 +12,13 @@ AVAILABLE PARKS:
 {parks}
 
 INTENT CATEGORIES:
-- park_specific: Question about one or more specific parks (e.g. "What permits do I need for Half Dome?")
-- comparative: Comparing parks or asking which park is best for something (e.g. "Which park has the best hiking?")
+- park_specific: Question about one or more specific parks (e.g. "What permits do I need for Half Dome?", "Is Yellowstone open in winter?")
+- comparative: Comparing parks or asking which park is best for something (e.g. "Does Yosemite or Grand Canyon have better hiking?", "Which park has the best hiking?")
 - general_parks: General national park question not about a specific park (e.g. "What should I pack for a national park trip?")
 - off_topic: Not related to US national parks at all (e.g. "What's the weather in Paris?")
 
 RULES:
+- If a query mentions a specific park by name, it is park_specific — not general_parks
 - For park_specific, return the relevant park code(s)
 - For comparative with specific parks mentioned, return those park codes
 - For comparative without specific parks, general_parks, and off_topic, return an empty parks array
