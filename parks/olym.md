@@ -25,6 +25,18 @@ regions requires traveling around the peninsula on US-101, which can mean 1-3
 hours between areas. Plan your visit around specific regions rather than trying
 to see everything in one day.
 
+## Entry - Fees & Reservations
+
+- Free Entrance Days in 2026:
+  - February 16: Presidents Day (Washington's Birthday)
+  - May 25: Memorial Day
+  - June 14: Flag Day/President Trump's birthday
+  - July 3–5: Independence Day weekend
+  - August 25: 110th Birthday of the National Park Service
+  - September 17: Constitution Day
+  - October 27: Theodore Roosevelt's birthday
+  - November 11: Veterans Day
+
 ## Activities
 
 ### Hiking

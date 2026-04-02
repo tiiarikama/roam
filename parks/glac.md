@@ -29,6 +29,19 @@ suspended. Visitors no longer need a timed-entry permit to drive the road, but
 should expect temporary closures when parking areas (especially Logan Pass)
 reach capacity. Arrive early for the best experience.
 
+## Entry - Fees & Reservations
+
+- Free Entrance Days in 2026:
+  - February 16: Presidents Day (Washington's Birthday)
+  - May 25: Memorial Day
+  - June 14: Flag Day/President Trump's birthday
+  - July 3–5: Independence Day weekend
+  - August 25: 110th Birthday of the National Park Service
+  - September 17: Constitution Day
+  - October 27: Theodore Roosevelt's birthday
+  - November 11: Veterans Day
+
+
 ## Activities
 
 ### Hiking

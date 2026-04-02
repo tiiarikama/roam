@@ -3,6 +3,7 @@
 # Joshua Tree National Park
 
 ## Overview
+
 Joshua Tree National Park covers nearly 800,000 acres of southern California
 desert where two distinct ecosystems converge. The higher, cooler Mojave Desert
 in the western half of the park is home to the park's namesake Joshua trees —
@@ -21,9 +22,22 @@ with a southern entrance off Interstate 10 near Cottonwood Spring.
 There is no lodging, food, gas, or water available inside the park. Come fully
 prepared.
 
+## Entry - Fees & Reservations
+
+- Free Entrance Days in 2026:
+  - February 16: Presidents Day (Washington's Birthday)
+  - May 25: Memorial Day
+  - June 14: Flag Day/President Trump's birthday
+  - July 3–5: Independence Day weekend
+  - August 25: 110th Birthday of the National Park Service
+  - September 17: Constitution Day
+  - October 27: Theodore Roosevelt's birthday
+  - November 11: Veterans Day
+
 ## Activities
 
 ### Hiking
+
 Joshua Tree offers a wide variety of trails, most of which are short and
 accessible — nine of the park's most popular hikes are under 3 miles. The
 terrain is mostly flat to gently rolling desert, with a few summit climbs
@@ -32,6 +46,7 @@ almost no shade on any trail, temperatures can exceed 100°F in summer, and
 dehydration is a constant risk.
 
 Important safety rules:
+
 - Carry and drink plenty of water — at least one gallon per person per day. There is no water available on any trail or at most campgrounds.
 - Wear a hat, sunscreen, and sturdy closed-toe shoes. Flip-flops and sandals cause frequent injuries.
 - Do not hike in the midday heat during summer (June-September). Hike at dawn or dusk if visiting in warm months.
@@ -40,6 +55,7 @@ Important safety rules:
 - Cell service is virtually nonexistent inside the park. Download offline maps before entering.
 
 ### Rock Climbing
+
 Joshua Tree is one of the premier rock climbing destinations in the world, with
 over 8,000 established routes on the park's monzogranite formations. Routes
 range from beginner-friendly bouldering problems to multi-pitch traditional
@@ -59,6 +75,7 @@ Clean up tape and other debris. The NPS monitors climbing impacts on vegetation
 and wildlife — certain areas may have seasonal closures for nesting raptors.
 
 ### Stargazing
+
 Joshua Tree is designated an International Dark Sky Park and offers some of the
 best stargazing in southern California. On clear, moonless nights the Milky Way
 is brilliantly visible, and thousands of stars fill the sky. The park hosts
@@ -71,6 +88,7 @@ Cactus Garden area. New moon periods offer the darkest skies. Bring a red-light
 headlamp to preserve your night vision.
 
 ### Scenic Drives
+
 Park Boulevard runs roughly 25 miles between the West and North Entrances,
 passing most major trailheads, campgrounds, and viewpoints. Allow 2-3 hours
 with stops. Key pullouts include Hidden Valley, Cap Rock, Skull Rock, and
@@ -90,6 +108,7 @@ Geology Tour Road is an 18-mile unpaved loop (4WD recommended for the southern
 half) exploring the park's geologic features and desert washes.
 
 ### Horseback Riding
+
 Horses are allowed on most trails and backcountry areas. Ryan Campground
 includes a horse camp section (reservation required). Stock must carry their
 own feed — grazing is not permitted. The California Riding and Hiking Trail
@@ -98,19 +117,23 @@ runs 35 miles through the park.
 ## Overnight Stays
 
 ### Lodging
+
 There is no lodging inside Joshua Tree National Park. The nearest
 accommodations are in the gateway towns along Highway 62:
+
 - Joshua Tree (West Entrance): Small town with vacation rentals, motels, and desert-style Airbnbs. Closest to Hidden Valley and the western climbing areas.
 - Twentynine Palms (North Entrance): Larger town with hotels, motels, and the park headquarters/Oasis Visitor Center.
 - Yucca Valley: West of Joshua Tree, with more chain hotel options.
 - Palm Springs area (South Entrance, via I-10): Resort city about 45 minutes from the Cottonwood entrance.
 
 ### Camping
+
 Joshua Tree has eight campgrounds with roughly 500 sites total. None have
 showers or RV hookups. Most are primitive desert camping with vault toilets,
 picnic tables, and fire rings.
 
 Reservable campgrounds (reserve at recreation.gov, up to 6 months in advance):
+
 - Jumbo Rocks: 124 sites among spectacular boulder formations. Central location near Skull Rock. No water.
 - Ryan: 31 sites near Ryan Mountain trailhead. Popular with hikers and climbers. No water. Includes a horse camp section.
 - Indian Cove: 101 sites nestled in boulders near the park's north side. Separate entrance off Highway 62 — not directly connected to the rest of the park by road. No water. Amphitheater with ranger programs.
@@ -118,6 +141,7 @@ Reservable campgrounds (reserve at recreation.gov, up to 6 months in advance):
 - Cottonwood: 62 sites near the South Entrance in the Colorado Desert zone. Has potable water, flush toilets, and a dump station. Lower elevation (3,000 ft), warmer in winter.
 
 First-come, first-served campgrounds:
+
 - Hidden Valley: 44 sites. A climber favorite — routes are steps from many campsites. Central location. No water.
 - White Tank: 15 sites. Quiet, dark skies, near Arch Rock. No water.
 - Belle: 18 sites. Small, quiet, good stargazing. No water.
@@ -131,6 +155,7 @@ arrive by Thursday for the best chance. Morning (9 am - noon) is the best time
 to find a vacated site.
 
 ### Backcountry Camping
+
 Backcountry camping is allowed in designated areas at least 1 mile from any
 road, 500 feet from any trail, and 500 feet from any water source. A free
 self-registration permit is required — register at one of the 13 backcountry
@@ -143,6 +168,7 @@ day) and pack out all waste.
 ### Mojave Desert (Western Park) Day Hikes
 
 #### Hidden Valley Nature Trail
+
 - Distance: 1 mile (1.6 km) loop
 - Elevation gain: Minimal
 - Difficulty: Easy
@@ -151,6 +177,7 @@ day) and pack out all waste.
 - Notes: A flat loop through a rock-enclosed valley — one of the most iconic short hikes in the park. The valley is surrounded on all sides by massive boulder formations, creating a natural amphitheater. Joshua trees, yucca, and other desert plants fill the valley floor. Interpretive signs explain the area's ecology and ranching history (the valley was allegedly used by cattle rustlers to hide stolen stock). The trailhead parking lot fills quickly on weekends — arrive early. This is also a major climbing area.
 
 #### Barker Dam Nature Trail
+
 - Distance: 1.3 miles (2.1 km) loop
 - Elevation gain: Minimal
 - Difficulty: Easy
@@ -159,6 +186,7 @@ day) and pack out all waste.
 - Notes: A loop past a small dam built by early ranchers to collect rainwater. When the dam has water (typically after winter rains), it attracts wildlife and reflects the surrounding boulders beautifully. The trail also passes Native American petroglyphs (note: some were unfortunately painted over during a 1960s Disney film production). Good for wildflowers in spring. Parking is shared with the Wall Street Mill trailhead.
 
 #### Wall Street Mill Trail
+
 - Distance: 2 miles (3.2 km) round trip
 - Elevation gain: 75 ft (23 m)
 - Difficulty: Easy
@@ -167,6 +195,7 @@ day) and pack out all waste.
 - Notes: An easy walk along an old ranch road to one of the best-preserved gold mining sites in the southern California desert. The trail passes the ruins of Wonderland Ranch, rusted vehicles, a windmill, and the historic Wall Street Mill stamp mill used to process gold ore. The site is on the National Register of Historic Places. Do not touch or remove any artifacts.
 
 #### Ryan Mountain Trail
+
 - Distance: 3 miles (4.8 km) round trip
 - Elevation gain: 1,050 ft (320 m)
 - Difficulty: Strenuous
@@ -175,6 +204,7 @@ day) and pack out all waste.
 - Notes: The most popular summit hike in Joshua Tree and one of the most rewarding. The trail climbs steadily via switchbacks to the top of Ryan Mountain (5,457 ft) with 360-degree panoramic views of the park — the Wonderland of Rocks, Lost Horse Valley, Pleasant Valley, and on clear days, Mount San Jacinto and San Gorgonio. There is zero shade on this trail. Do not attempt in summer midday heat. Bring at least 2 liters of water. Sunrise and sunset are spectacular from the summit. The parking lot fills early on weekends; restrooms are available at the trailhead.
 
 #### Skull Rock Loop
+
 - Distance: 1.7 miles (2.7 km) loop
 - Elevation gain: Minimal
 - Difficulty: Easy
@@ -183,6 +213,7 @@ day) and pack out all waste.
 - Notes: A flat loop passing Skull Rock, a famously photogenic boulder with two large eye-socket-like hollows formed by erosion. The trail winds through Joshua trees and boulder fields. Can be combined with the adjacent Split Rock Loop (2.5 miles) and Discovery Trail (0.7 miles) for a longer walk. The Skull Rock parking area gets congested — watch for traffic when crossing the road.
 
 #### Lost Horse Mine Trail
+
 - Distance: 4 miles (6.4 km) round trip
 - Elevation gain: 500 ft (150 m)
 - Difficulty: Moderate
@@ -191,6 +222,7 @@ day) and pack out all waste.
 - Notes: A well-maintained trail to one of the most successful gold mines in the region, operating in the late 1800s. The mine site includes a well-preserved 10-stamp mill, mine shafts (fenced off), and old equipment. The area is a National Historic Site — do not enter mine openings or touch artifacts. The trail passes through Joshua tree forest with views of Pleasant Valley. Limited parking; arrive early on weekends.
 
 #### Keys View
+
 - Distance: 0.25 miles (0.4 km) round trip
 - Elevation gain: Minimal (paved)
 - Difficulty: Easy
@@ -201,6 +233,7 @@ day) and pack out all waste.
 ### Mojave Desert (Western Park) Longer Hikes
 
 #### Boy Scout Trail
+
 - Distance: 8 miles (12.9 km) one way; 16 miles round trip
 - Elevation gain: 1,300 ft (396 m) total
 - Difficulty: Strenuous
@@ -209,6 +242,7 @@ day) and pack out all waste.
 - Notes: The longest established day hike in the main park area, traversing from the Wonderland of Rocks through Joshua tree forest and washes to Indian Cove. Can be done as a through-hike with a car shuttle or as an out-and-back from either end. The Wonderland of Rocks section (first few miles from Keys West) is the most scenic. The trail passes through prime scrambling terrain. Carry plenty of water — there are no water sources. Sign in at the backcountry registration board at the trailhead.
 
 #### Panorama Loop and Warren Peak
+
 - Distance: 6.5 miles (10.5 km) loop (add 1.4 miles for Warren Peak spur)
 - Elevation gain: 1,200 ft (366 m)
 - Difficulty: Strenuous
@@ -219,6 +253,7 @@ day) and pack out all waste.
 ### Colorado Desert (Eastern/Southern Park) Day Hikes
 
 #### Cholla Cactus Garden Nature Trail
+
 - Distance: 0.25 miles (0.4 km) loop
 - Elevation gain: Minimal
 - Difficulty: Easy
@@ -227,6 +262,7 @@ day) and pack out all waste.
 - Notes: A short boardwalk loop through a dense, surreal 10-acre garden of teddy bear cholla (Bigelow's cholla). The cacti glow golden at sunrise and sunset. Do NOT touch the cholla — their spiny segments detach easily and cling painfully to skin and clothing (carry a comb or pliers to remove them). This is one of the most photographed spots in the park. Interpretive signs explain the desert ecology.
 
 #### Arch Rock Trail
+
 - Distance: 1.2 miles (1.9 km) loop
 - Elevation gain: 80 ft (24 m)
 - Difficulty: Easy
@@ -235,6 +271,7 @@ day) and pack out all waste.
 - Notes: A short trail to a striking natural granite arch — one of the most photographed formations in the park. The trail winds through boulder fields with opportunities for scrambling. Beyond the arch, additional informal trails lead to more rock formations. A popular spot for astrophotography at night. Respect campers at adjacent White Tank Campground if visiting after dark.
 
 #### Mastodon Peak Loop
+
 - Distance: 2.5 miles (4 km) loop
 - Elevation gain: 380 ft (116 m)
 - Difficulty: Moderate
@@ -243,6 +280,7 @@ day) and pack out all waste.
 - Notes: A loop trail climbing to the summit of Mastodon Peak with views of the Salton Sea, Eagle Mountains, and surrounding desert on clear days. The trail passes the historic Mastodon gold mine. A short scramble is required to reach the summit. Less crowded than trails along Park Boulevard. Start at Cottonwood Spring, a natural palm oasis that attracts birds and wildlife.
 
 #### Cottonwood Spring Oasis
+
 - Distance: 1 mile (1.6 km) round trip
 - Elevation gain: Minimal
 - Difficulty: Easy
@@ -253,6 +291,7 @@ day) and pack out all waste.
 ## Permits & Reservations
 
 ### Entrance Fee
+
 - $30 per vehicle (7-day pass)
 - $25 per motorcycle
 - $15 per person on foot or bicycle
@@ -260,12 +299,14 @@ day) and pack out all waste.
 - Digital entrance passes available on recreation.gov (recommended to purchase in advance to speed entry)
 
 ### Backcountry Camping
+
 - Free self-registration at backcountry boards located at trailheads
 - Camp at least 1 mile from any road, 500 feet from any trail, 500 feet from any water source
 - No campfires in the backcountry
 - No permit needed for day hiking
 
 ### Campground Reservations
+
 - Reserve at recreation.gov up to 6 months in advance for reservable campgrounds
 - First-come, first-served campgrounds (Hidden Valley, White Tank, Belle) do not accept reservations
 - Group site reservations available at Cottonwood, Indian Cove, and Sheep Pass
@@ -273,6 +314,7 @@ day) and pack out all waste.
 ## Seasons & Access
 
 ### Fall (October–November)
+
 The best time to visit. Temperatures drop to comfortable levels (highs 70-85°F
 in October, 60-75°F in November), rock climbing season begins, and the park
 comes alive after the summer heat. Campgrounds fill quickly on weekends —
@@ -280,6 +322,7 @@ reserve in advance or arrive early for first-come sites. Wildflower season
 for fall-blooming species. Excellent stargazing with longer nights.
 
 ### Winter (December–February)
+
 Pleasant daytime temperatures (highs 50-65°F) but cold nights that can drop
 below freezing, especially at higher elevations. Snow is possible but rare.
 This is peak climbing season and a popular time for camping. Some campgrounds
@@ -288,6 +331,7 @@ Shorter days mean more hours of dark sky for stargazing. The park can be busy
 during holidays (Thanksgiving, Christmas, New Year's).
 
 ### Spring (March–May)
+
 Peak season, especially March and April when wildflower blooms can be
 spectacular (dependent on winter rainfall). Temperatures are warm but not yet
 dangerous (highs 75-95°F). This is the busiest time in the park — parking lots
@@ -298,6 +342,7 @@ are best in March and April; Joshua trees bloom in February through April
 depending on conditions.
 
 ### Summer (June–September)
+
 Extremely hot — daytime temperatures regularly exceed 100°F and can reach
 115°F. The NPS strongly advises against hiking between 10 am and 4 pm. The
 park is largely empty, and many campgrounds are lightly used or closed.
@@ -310,6 +355,7 @@ the rocks.
 ## Getting There & Around
 
 ### Getting There
+
 - Nearest airports: Palm Springs International (PSP, 45 miles south), Ontario International (ONT, 100 miles west), Los Angeles International (LAX, 130 miles west)
 - From Los Angeles: ~2.5 hours via I-10 East to Highway 62 North (West/North Entrance) or I-10 East to Cottonwood Spring Road (South Entrance)
 - From Palm Springs: ~45 minutes to South Entrance via I-10 East; ~1 hour to West Entrance via Highway 62
@@ -317,6 +363,7 @@ the rocks.
 - Three park entrances: West (town of Joshua Tree via Highway 62), North (Twentynine Palms via Highway 62), South (off I-10 via Cottonwood Spring Road)
 
 ### Getting Around Inside the Park
+
 - There is no shuttle system. A private vehicle is required.
 - Park Boulevard connects the West and North Entrances (~25 miles, 45 minutes without stops). Pinto Basin Road connects to the South Entrance (~30 miles more).
 - All main roads are paved and accessible to regular vehicles.
@@ -325,6 +372,7 @@ the rocks.
 - The park gets very congested on weekends during peak season (October-May). Parking lots at Hidden Valley, Skull Rock, Keys View, and Ryan Mountain fill by mid-morning. The North Entrance (Twentynine Palms) typically has shorter wait times than the West Entrance.
 
 ## Practical Tips
+
 - There is no gas, food, water, or lodging inside the park. Fill up in Joshua Tree, Twentynine Palms, or Yucca Valley before entering. The nearest gas to the South Entrance is in Chiriaco Summit or Indio.
 - Cell service is virtually nonexistent in the park. Download the NPS app with offline content, save maps to your phone, and tell someone your itinerary before entering.
 - Water: Only Black Rock and Cottonwood campgrounds have potable water. All other campgrounds and trailheads have NO water. Bring all the water you will need — at least 1 gallon per person per day.
