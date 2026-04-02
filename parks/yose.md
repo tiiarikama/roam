@@ -17,7 +17,7 @@ quieter, alpine alternative accessible via Tioga Road when it's open
 
 ## Entry - Fees & Reservations
 
-Entry reservation requirements vary by year — Yosemite has used timed entry systems in recent years. Check nps.gov/yose before your trip for the current season's requirements, as the policy is evaluated annually. A reservation is not required to enter Yosemite in 2026.
+Entry reservation requirements vary by year — Yosemite has used timed entry systems in recent years. Check nps.gov/yose before your trip for the current season's requirements, as the policy is evaluated annually. A reservation or a timed entry permit is not required to enter Yosemite in 2026.
 
 - Standard Entrance Pass: A Private Vehicle pass costs $35, and a Motocycle pass is $30. If you enter the park on a bicycle or on foot, and are at least 16 years old, the entry fee is $20. If you enter the park in a motorized vehicle, your entrance pass covers both you and your passengers. Your passengers do not need a separate pass. Admission to Grand Canyon National Park is for seven days and includes the South Rim.
 - Annual Pass: Priced at $70 for unlimited visits to Grand Canyon National Park for US citizens and residents. valid one year from month of purchase; it is non-transferable. It admits the pass holder and any accompanying persons in a single, private, non-commercial vehicle, or the pass holder and accompanying immediate family (spouse, children, parents) when entry is by other means (train, shuttle, bicycle, or foot).
