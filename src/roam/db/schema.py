@@ -59,18 +59,11 @@ def setup_schema():
     finally:
         connection.close()
 
-def clear_park_chunks(park_code: str):
-    connection = connect()
-
-    try:
-        with connection.cursor() as cur:
-            cur.execute(
-                "DELETE FROM park_chunks WHERE park_code = %s", (park_code,)
-            )
-
-        connection.commit()
-    finally:
-        connection.close()
+def clear_park_chunks(connection: psycopg2.extensions.connection, park_code: str):
+    with connection.cursor() as cur:
+        cur.execute(
+            "DELETE FROM park_chunks WHERE park_code = %s", (park_code,)
+        )
 
 if __name__ == '__main__':
     setup_schema()

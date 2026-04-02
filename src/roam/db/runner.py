@@ -1,4 +1,5 @@
 import json
+import sys # for individual md file ingestion
 import psycopg2
 from roam.config import TARGET_PARKS
 from roam.db.schema import connect, clear_park_chunks
@@ -66,7 +67,7 @@ def run_park(park_code: str):
         #store
         connection = connect()
         try:
-            clear_park_chunks(park_code)
+            clear_park_chunks(connection, park_code)
             upsert_park(connection, park_data["park_info"])
             insert_chunks(connection, embedded_chunks)
             connection.commit()
@@ -96,4 +97,6 @@ def run_all():
         print(f"Failed:  {failed}")
 
 if __name__ == "__main__":
-    run_park("yose")
+    if len(sys.argv) > 1:
+        run_park(sys.argv[1])
+    else: run_all()
