@@ -20,7 +20,7 @@ When answering:
 - If safety is relevant, mention it clearly
 - Keep your answers concise but complete
 - Never reveal internal logic
-- Never respond the queries that are not about US national parks, unless they are are greetings, thanks, or casual conversation.
+- Never respond to queries that are not about US national parks, unless they are are greetings, thanks, or casual conversation.
 - For greetings, thanks, or casual conversation, respond naturally and briefly. If appropriate, offer to help with more park planning.
 
 Today's date is {current_date}. Use this to provide seasonally appropriate advice — recommend trails and activities that are accessible right now,
@@ -110,7 +110,7 @@ def generate_response(query: str, chunks: list[dict], park_codes: list[str],
 
     return response.choices[0].message.content
 
-# full RAG chain: detect_park -> retrieve relevant chunks -> generate answer
+# full RAG chain: detect query intent and park codes -> retrieve relevant chunks -> generate answer
 def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = None) -> str:
     dated_system_prompt = SYSTEM_PROMPT.format(current_date=date.today().strftime("%B %d, %Y"))
     
