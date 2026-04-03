@@ -76,7 +76,7 @@ ROUTER_RESPONSE_FORMAT = {
 
 # classifies query intent and detects relevant park(s)
 def route_query(query: str) -> dict:
-    parks_list = "\n".join(f"- {code}: {name}" for code, name in PARK_METADATA.items())
+    parks_list = "\n".join(f"- {code}: {data["name"]}" for code, data in PARK_METADATA.items())
 
     try:
         response = client.chat.completions.create(

@@ -85,7 +85,7 @@ def retrieve_chunks(query: str, intent: str, park_codes: list[str]) -> list[dict
 def generate_response(query: str, chunks: list[dict], park_codes: list[str],
                       system_prompt: str, history: list[dict] = None) -> str:
     if park_codes:
-        park_names = ", ".join(PARK_METADATA[code] for code in park_codes)
+        park_names = ", ".join(PARK_METADATA[code]["name"] for code in park_codes)
     else:
         park_names = "US National Parks"
 
