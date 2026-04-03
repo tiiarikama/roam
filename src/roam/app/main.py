@@ -1,12 +1,17 @@
 import streamlit as st
 from roam.rag.chain import ask
+from roam.config import PARKS_BY_STATE
+
+park_list = "\n".join(
+    f"- {state}: {', '.join(parks)}" for state, parks in PARKS_BY_STATE.items()
+)
 
 WELCOME_MESSAGE = (
     "Welcome to Roam! I can help you plan trips to US national parks. "
     "Ask me about trails, permits, campgrounds, road conditions, and more. "
+    f"Here are the parks I know best:\n\n{park_list}\n\n"
     "Which park are you interested in?"
 )
-
 
 st.set_page_config(page_title="Roam - Plan Your Next Adventure", page_icon="static/favicon.png")
 
