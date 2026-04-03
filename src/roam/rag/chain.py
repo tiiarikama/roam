@@ -3,6 +3,7 @@ from datetime import date
 from roam.config import OPENAI_API_KEY, LLM_MODEL, PARK_METADATA, PARKS_BY_STATE, TOP_K_GLOBAL
 from roam.rag.retriever import retrieve
 from roam.rag.router import route_query
+from roam.weather.client import get_weather
 
 
 client = OpenAI(api_key=OPENAI_API_KEY)
@@ -42,11 +43,23 @@ def build_context(chunks: list[dict]) -> str:
     
     return "\n\n---\n\n".join(sections)
 
+def fetch_weather_context(park_codes: list[str]) -> str | None:
+    weather_parts = []
+
+    for code in park_codes:
+        weather = get_weather(code)
+
+        if weather:
+            weather_parts.append(weather)
+
+    return "\n\n".join(weather_parts) if weather_parts else None
+
 # resolves intent and park codes, applying conversation context fallbacks
-def resolve_route(query: str, last_park_codes: list[str] = None) -> tuple[str, list[str]]:
+def resolve_route(query: str, last_park_codes: list[str] = None) -> tuple[str, list[str], bool]:
     route = route_query(query)
     intent = route["intent"]
     park_codes = route["parks"]
+    needs_weather = route.get("needs_weather", False)
 
     if intent == "off_topic" and last_park_codes:
         park_codes = last_park_codes
@@ -62,7 +75,7 @@ def resolve_route(query: str, last_park_codes: list[str] = None) -> tuple[str, l
         park_codes = last_park_codes
         intent = "park_specific"
 
-    return intent, park_codes
+    return intent, park_codes, needs_weather
 
 # retrieves chunks based on intent and park codes
 def retrieve_chunks(query: str, intent: str, park_codes: list[str]) -> list[dict]:
@@ -83,13 +96,16 @@ def retrieve_chunks(query: str, intent: str, park_codes: list[str]) -> list[dict
     return []
 
 def generate_response(query: str, chunks: list[dict], park_codes: list[str],
-                      system_prompt: str, history: list[dict] = None) -> str:
+                      system_prompt: str, history: list[dict] = None, weather_context: str = None) -> str:
     if park_codes:
         park_names = ", ".join(PARK_METADATA[code]["name"] for code in park_codes)
     else:
         park_names = "US National Parks"
 
     context = build_context(chunks)
+
+    if weather_context:
+        context = f"{weather_context}\n\n--\n\n{context}"
 
     context_prompt = f"""
     Here is the most relevant information about {park_names}:
@@ -135,7 +151,7 @@ def generate_greeting(query: str, system_prompt: str, history: list[dict] = None
 def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = None) -> str:
     dated_system_prompt = SYSTEM_PROMPT.format(current_date=date.today().strftime("%B %d, %Y"))
     
-    intent, park_codes = resolve_route(query, last_park_codes)
+    intent, park_codes, needs_weather = resolve_route(query, last_park_codes)
 
     if intent == "greeting":
         try:
@@ -159,6 +175,10 @@ def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = Non
         )
     
     all_chunks = retrieve_chunks(query, intent, park_codes)
+
+    weather_context = None
+    if needs_weather and park_codes:
+        weather_context = fetch_weather_context(park_codes)
     
     if not all_chunks:
         return (
@@ -168,7 +188,7 @@ def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = Non
         )
 
     try:
-        answer = generate_response(query, all_chunks, park_codes, dated_system_prompt, history)
+        answer = generate_response(query, all_chunks, park_codes, dated_system_prompt, history, weather_context)
     except Exception as e:
         print(f"Chain error occurred: {e}")
         return "Sorry, I'm having trouble generating a response right now. Please try again.", park_codes
