@@ -66,20 +66,30 @@ streamlit run src/roam/app/main.py
 roam/
 ├── .env.example
 ├── .gitignore
-├── .streamlit/
-│   └── config.toml
-├── README.md
-├── pyproject.toml
 ├── poetry.lock
-├── static/                 # Logo and favicon
+├── pyproject.toml
+├── README.md
+├── static/                       # Logo and favicon
 │   ├── logo.svg
 │   └── favicon.png
-├── parks/                  # Hand-curated markdown park documents
-│   └── yose.md
+├── parks/                        # Hand-curated markdown park documents
+│   ├── acad.md
+|   ├── glac.md
+|   ├── grca.md
+|   ├── grte.md
+|   ├── jotr.md
+|   ├── olym.md
+|   ├── romo.md
+|   ├── yell.md
+|   ├── yose.md
+|   └── zion.md
 ├── src/
 │   └── roam/
 │       ├── __init__.py
 │       ├── config.py
+│       ├── app/                   # Streamlit frontend
+│       |    ├── __init__.py
+│       |    └── main.py
 │       ├── ingestion/             # Data pipeline: fetch → chunk → embed → store
 │       │   ├── __init__.py
 │       │   ├── schema.py
@@ -88,14 +98,13 @@ roam/
 │       │   ├── embedder.py
 │       │   ├── md_loader.py
 │       │   └── runner.py
-│       ├── rag/            # Retrieval layer: query router, retriever, chain
+│       ├── rag/                   # Retrieval layer: query router, retriever, chain
 │       │   ├── __init__.py
 │       │   ├── router.py
 │       │   ├── retriever.py
 │       │   └── chain.py
-│       └── app/            # Streamlit frontend
-│           ├── __init__.py
-│           └── main.py
+|       └── weather/               # Open-Meteo API client module for live weather data
+|            └── client.py
 └── tests/
     ├── __init__.py
     ├── test_chunker.py
