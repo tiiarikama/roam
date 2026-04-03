@@ -15,7 +15,7 @@ with col2:
     st.image("static/logo.svg", use_column_width=True)
 
 # resets chat history and empties previously used park codes
-if st.button("Reset Chat"):
+if st.sidebar.button("Clear Chat"):
     st.session_state.messages = [
         {"role": "assistant", "content": WELCOME_MESSAGE}
     ]
