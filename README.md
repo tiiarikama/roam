@@ -41,17 +41,17 @@ cp .env.example .env
 
 ```bash
 createdb roam_dev
-python -m roam.db.schema
+python -m roam.ingestion.schema
 ```
 
 ### 5. Run ingestion
 
 ```bash
 # Ingest all parks
-python -m roam.db.runner
+python -m roam.ingestion.runner
 
 # Or test with a single park first
-python -m roam.db.runner yose
+python -m roam.ingestion.runner yose
 ```
 
 ### 6. Run the app
@@ -80,7 +80,7 @@ roam/
 │   └── roam/
 │       ├── __init__.py
 │       ├── config.py
-│       ├── db/             # Data pipeline: fetch → chunk → embed → store
+│       ├── ingestion/             # Data pipeline: fetch → chunk → embed → store
 │       │   ├── __init__.py
 │       │   ├── schema.py
 │       │   ├── fetcher.py

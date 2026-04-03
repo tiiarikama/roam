@@ -2,11 +2,11 @@ import json
 import sys # for individual md file ingestion
 import psycopg2
 from roam.config import TARGET_PARKS
-from roam.db.schema import connect, clear_park_chunks
-from roam.db.fetcher import fetch_all_park_data
-from roam.db.chunker import chunk_all
-from roam.db.md_loader import load_markdown_chunks
-from roam.db.embedder import embed_chunks
+from roam.ingestion.schema import connect, clear_park_chunks
+from roam.ingestion.fetcher import fetch_all_park_data
+from roam.ingestion.chunker import chunk_all
+from roam.ingestion.md_loader import load_markdown_chunks
+from roam.ingestion.embedder import embed_chunks
 
 # inserts or updates a park record in the parks table
 def upsert_park(connection, park_info: dict):

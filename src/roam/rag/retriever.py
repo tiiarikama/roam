@@ -3,7 +3,7 @@ from openai import OpenAI
 from roam.config import (
     OPENAI_API_KEY, EMBEDDING_MODEL, EMBEDDING_DIMENSIONS, TOP_K_RESULTS
 )
-from roam.db.schema import connect
+from roam.ingestion.schema import connect
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
