@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from collections import defaultdict
 import os
 
 load_dotenv()
@@ -28,35 +29,68 @@ INTENT_CATEGORIES = ("park_specific", "comparative", "general_parks", "greeting"
 TOP_K_RESULTS = 5
 TOP_K_GLOBAL = 10
 
-
-
 # NPS
 NPS_BASE_URL = "https://developer.nps.gov/api/v1"
 
 #available parks
 PARK_METADATA = {
-    "grca": "Grand Canyon National Park (Arizona)",
-    "jotr": "Joshua Tree National Park (California)",
-    "yose": "Yosemite National Park (California)",
-    "romo": "Rocky Mountain National Park (Colorado)",
-    "acad": "Acadia National Park (Maine)",
-    "glac": "Glacier National Park (Montana)",
-    "zion": "Zion National Park (Utah)",
-    "olym": "Olympic National Park (Washington)",
-    "yell": "Yellowstone National Park (Wyoming)",
-    "grte": "Grand Teton National Park (Wyoming)",
+    "grca": {
+        "name": "Grand Canyon National Park",
+        "state": "Arizona",
+        "coordinates": (36.1728, -112.6836),
+    },
+    "jotr": {
+        "name": "Joshua Tree National Park",
+        "state": "California",
+        "coordinates": (33.8819, -115.9007),
+    },
+    "yose": {
+        "name": "Yosemite National Park",
+        "state": "California",
+        "coordinates": (37.8488, -119.5572),
+    },
+    "romo": {
+        "name": "Rocky Mountain National Park",
+        "state": "Colorado",
+        "coordinates": (40.3432, -105.6881),
+    },
+    "acad": {
+        "name": "Acadia National Park",
+        "state": "Maine",
+        "coordinates": (44.3390, -68.2733),
+    },
+    "glac": {
+        "name": "Glacier National Park",
+        "state": "Montana",
+        "coordinates": (48.6841, -113.8009),
+    },
+    "zion": {
+        "name": "Zion National Park",
+        "state": "Utah",
+        "coordinates": (37.2978, -113.0288),
+    },
+    "olym": {
+        "name": "Olympic National Park",
+        "state": "Washington",
+        "coordinates": (47.8039, -123.6664),
+    },
+    "yell": {
+        "name": "Yellowstone National Park",
+        "state": "Wyoming",
+        "coordinates": (44.5982, -110.5472),
+    },
+    "grte": {
+        "name": "Grand Teton National Park",
+        "state": "Wyoming",
+        "coordinates": (43.8185, -110.7055),
+    },
 }
 
-PARKS_BY_STATE = {
-    "Arizona": ["Grand Canyon National Park"],
-    "California": ["Joshua Tree National Park", "Yosemite National Park"],
-    "Colorado": ["Rocky Mountain National Park"],
-    "Maine": ["Acadia National Park"],
-    "Montana": ["Glacier National Park"],
-    "Utah": ["Zion National Park"],
-    "Washington": ["Olympic National Park"],
-    "Wyoming": ["Yellowstone National Park", "Grand Teton National Park"],
-}
+
+PARKS_BY_STATE = defaultdict(list)
+for data in PARK_METADATA.values():
+    PARKS_BY_STATE[data["state"]].append(data["name"])
+
 
 # extracted park codes
 TARGET_PARKS = list(PARK_METADATA.keys())
