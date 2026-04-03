@@ -23,6 +23,7 @@ RULES:
 - For park_specific, return the relevant park code(s)
 - For comparative with specific parks mentioned, return those park codes
 - For comparative without specific parks, general_parks, and off_topic, return an empty parks array
+- Set needs_weather to True if the query asks about current weather, current conditions, temperature, or what to wear/pack based on current weather. Set to False for general seasonal questions.
 
 EXAMPLES:
 "What permits do I need for Half Dome?"
@@ -48,6 +49,17 @@ parks: none
 "What's the best restaurant in NYC?"
 intent: off_topic
 parks: none
+
+"What's the weather like in Yosemite right now?"
+intent: park_specific
+parks: yose
+needs_weather: true
+
+"What's the best season to visit Zion?"
+intent: park_specific
+parks: zion
+needs_weather: false
+
 """
 
 ROUTER_RESPONSE_FORMAT = {
@@ -66,8 +78,11 @@ ROUTER_RESPONSE_FORMAT = {
                     "type": "array",
                     "items": {"type": "string"},
                 },
+                "needs_weather": {
+                    "type": "boolean",
+                },
             },
-            "required": ["intent", "parks"],
+            "required": ["intent", "parks", "needs_weather"],
             "additionalProperties": False,
         },
     },
