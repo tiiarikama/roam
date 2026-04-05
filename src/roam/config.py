@@ -18,10 +18,6 @@ LLM_MODEL = "gpt-4o-mini"
 # embedding
 EMBEDDING_DIMENSIONS = 1536
 
-# chunking
-CHUNK_SIZE = 400
-CHUNK_OVERLAP = 80
-
 #routing
 INTENT_CATEGORIES = ("park_specific", "comparative", "general_parks", "greeting", "off_topic")
 

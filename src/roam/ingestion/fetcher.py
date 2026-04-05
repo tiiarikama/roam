@@ -1,5 +1,5 @@
 import requests
-from roam.config import NPS_API_KEY, NPS_BASE_URL, TARGET_PARKS
+from roam.config import NPS_API_KEY, NPS_BASE_URL
 
 
 # private, shared base request handler for NPS API 
