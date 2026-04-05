@@ -56,14 +56,10 @@ def fetch_weather_context(park_codes: list[str]) -> str | None:
 
 # resolves intent and park codes, applying conversation context fallbacks
 def resolve_route(query: str, last_park_codes: list[str] = None) -> tuple[str, list[str], bool]:
-    route = route_query(query)
+    route = route_query(query, last_park_codes)
     intent = route["intent"]
     park_codes = route["parks"]
     needs_weather = route.get("needs_weather", False)
-
-    if intent == "off_topic" and last_park_codes:
-        park_codes = last_park_codes
-        intent = "park_specific"
         
     if intent == "park_specific" and not park_codes:
         if last_park_codes:

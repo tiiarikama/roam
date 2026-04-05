@@ -16,49 +16,60 @@ INTENT CATEGORIES:
 - comparative: Comparing parks or asking which park is best for something (e.g. "Does Yosemite or Grand Canyon have better hiking?", "Which park has the best hiking?")
 - general_parks: General national park question not about a specific park (e.g. "What should I pack for a national park trip?")
 - greeting: Greetings, thanks, casual conversation, or brief reactions to a previous answer (e.g. "Hey!", "Thanks that's helpful", "Great!", "Hello, can you help me?")
-- off_topic: Not related to US national parks at all (e.g. "What's the weather in Paris?")
+- off_topic: Not related to US national parks at all (e.g. "What's the weather in Paris?", "Give me a lasagna recipe!")
 
 RULES:
 - If a query mentions a specific park by name, it is park_specific — not general_parks
 - For park_specific, return the relevant park code(s)
 - For comparative with specific parks mentioned, return those park codes
 - For comparative without specific parks, general_parks, and off_topic, return an empty parks array
-- Set needs_weather to True if the query asks about current weather, current conditions, temperature, or what to wear/pack based on current weather. Set to False for general seasonal questions.
+- Set needs_weather to True if the query asks about current weather, current conditions, temperature, or what to wear/pack based on current weather. Set to False for general seasonal questions or any other non-weather related queries.
 
 EXAMPLES:
 "What permits do I need for Half Dome?"
 intent: park_specific
 parks: yose
+needs_weather: False
 
 "Compare Zion and Yosemite for hiking"
 intent: comparative
 parks: zion,yose
+needs_weather: False
 
 "Which park is best for wildlife?"
 intent: comparative
 parks: none
+needs_weather: False
+
+"What should I bring on a hike right now based on weather?"
+intent: general_parks
+parks: none
+needs_weather: True
 
 "What should I bring on a hike?"
 intent: general_parks
 parks: none
+needs_weather: False
 
 "Thanks, that's really helpful!"
 intent: greeting
 parks: none
+needs_weather: False
 
 "What's the best restaurant in NYC?"
 intent: off_topic
 parks: none
+needs_weather: False
 
 "What's the weather like in Yosemite right now?"
 intent: park_specific
 parks: yose
-needs_weather: true
+needs_weather: True
 
 "What's the best season to visit Zion?"
 intent: park_specific
 parks: zion
-needs_weather: false
+needs_weather: False
 
 """
 
@@ -90,8 +101,21 @@ ROUTER_RESPONSE_FORMAT = {
 
 
 # classifies query intent and detects relevant park(s)
-def route_query(query: str) -> dict:
+def route_query(query: str, last_park_codes: list[str] = None) -> dict:
     parks_list = "\n".join(f"- {code}: {data["name"]}" for code, data in PARK_METADATA.items())
+
+    prompt = ROUTER_PROMPT.format(parks=parks_list)
+
+    if last_park_codes:
+        park_names = ", ".join(PARK_METADATA[code]["name"] for code in last_park_codes if code in PARK_METADATA)
+        prompt += (
+            f"\n\nCONVERSATION CONTEXT:\n"
+            f"The user has been asking about: {park_names}.\n"
+            f"If the query is an ambiguous follow-up that could plausibly relate to these parks "
+            f"(e.g. 'what about food there?', 'how's the camping?'), classify it as park_specific "
+            f"and return the relevant park code(s). Only classify as off_topic if the query is "
+            f"clearly unrelated to national parks (e.g. 'give me a lasagna recipe')."
+        )
 
     try:
         response = client.chat.completions.create(
@@ -101,7 +125,7 @@ def route_query(query: str) -> dict:
             messages=[
                 {
                     "role": "system",
-                    "content": ROUTER_PROMPT.format(parks=parks_list),
+                    "content": prompt,
                 },
                 {
                     "role": "user",
