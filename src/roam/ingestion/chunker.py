@@ -26,20 +26,20 @@ def chunk_park_info(park_info: dict) -> list[dict]:
 
     # overview chunk with decription and designation
     if park_info.get("description"):
-        text = f"{park_name}\n{park_info["designation"]}\n\n{park_info["description"]}"
+        text = f"{park_name}\n{park_info["designation"]}\n\n{_strip_html(park_info["description"])}"
         overview_chunk = _make_chunk(park_code, park_name, "park_info", text,
                             {"source": "nps_api", "section": "overview"})
         chunks.append(overview_chunk)
     
     # weather chunk
     if park_info.get("weather_info"):
-        weather_chunk = _make_chunk(park_code, park_name, "park_info", park_info["weather_info"],
+        weather_chunk = _make_chunk(park_code, park_name, "park_info", _strip_html(park_info["weather_info"]),
                             {"source": "nps_api", "section": "weather"})
         chunks.append(weather_chunk)
     
     # directions chunk
     if park_info.get("directions_info"):
-        directions_chunk = _make_chunk(park_code, park_name, "park_info", park_info["directions_info"],
+        directions_chunk = _make_chunk(park_code, park_name, "park_info", _strip_html(park_info["directions_info"]),
                             {"source": "nps_api", "section": "directions"})
         chunks.append(directions_chunk)
 
@@ -71,7 +71,7 @@ def chunk_alerts(alerts: list[dict], park_code: str, park_name: str) -> list[dic
         if not alert.get("title") and not alert.get("description"):
             continue
 
-        text = f"[{alert.get("category", "Alert")}] {alert.get("title", "")}\n{alert.get("description", "")}"
+        text = f"[{alert.get("category", "Alert")}] {alert.get("title", "")}\n{_strip_html(alert.get("description", ""))}"
 
         if alert.get("url"):
             text += f"\nMore info at: {alert["url"]}"
@@ -92,9 +92,9 @@ def chunk_visitor_centers(visitor_centers: list[dict], park_code: str, park_name
 
         lines = [f"{vc["name"]} - Visitor Center"]
         if vc.get("description"):
-            lines.append(vc["description"])
+            lines.append(_strip_html(vc["description"]))
         if vc.get("directions"):
-            lines.append(f"Directions: {vc["directions"]}")
+            lines.append(f"Directions: {_strip_html(vc["directions"])}")
         if vc.get("amenities"):
             lines.append(f"Amenities: {vc["amenities"]}")
         if vc.get("operating_hours"):
@@ -119,9 +119,9 @@ def chunk_campgrounds(campgrounds: list[dict], park_code: str, park_name: str) -
         lines = [f"{cg['name']} — Campground"]
 
         if cg.get("description"):
-            lines.append(cg["description"])
+            lines.append(_strip_html(cg["description"]))
         if cg.get("reservation_info"):
-            lines.append(f"Reservations: {cg['reservation_info']}")
+            lines.append(f"Reservations: {_strip_html(cg['reservation_info'])}")
         if cg.get("fees"):
             for fee in cg["fees"]:
                 lines.append(f"Fee: {fee.get('title', '')}: ${fee.get('cost', '')}")
