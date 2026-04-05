@@ -1,5 +1,6 @@
 from openai import OpenAI
 from datetime import date
+from typing import Iterator
 from roam.config import OPENAI_API_KEY, LLM_MODEL, PARK_METADATA, PARKS_BY_STATE, TOP_K_GLOBAL
 from roam.rag.retriever import retrieve
 from roam.rag.router import route_query
@@ -92,7 +93,7 @@ def retrieve_chunks(query: str, intent: str, park_codes: list[str]) -> list[dict
     return []
 
 def generate_response(query: str, chunks: list[dict], park_codes: list[str],
-                      system_prompt: str, history: list[dict] = None, weather_context: str = None) -> str:
+                      system_prompt: str, history: list[dict] = None, weather_context: str = None):
     if park_codes:
         park_names = ", ".join(PARK_METADATA[code]["name"] for code in park_codes)
     else:
@@ -119,13 +120,17 @@ def generate_response(query: str, chunks: list[dict], park_codes: list[str],
 
     messages.append({"role": "user", "content": f"{context_prompt}\n\nQuestion: {query}"})
 
-    response = client.chat.completions.create(
+    stream = client.chat.completions.create(
         model=LLM_MODEL,
         max_tokens=1024,
         messages=messages,
+        stream=True,
     )
 
-    return response.choices[0].message.content
+    for chunk in stream:
+        content = chunk.choices[0].delta.content
+        if content:
+            yield content
 
 def generate_greeting(query: str, system_prompt: str, history: list[dict] = None) -> str:
     messages = [{"role": "system", "content": system_prompt}]
@@ -144,7 +149,7 @@ def generate_greeting(query: str, system_prompt: str, history: list[dict] = None
     return response.choices[0].message.content
 
 # full RAG chain: detect query intent and park codes -> retrieve relevant chunks -> generate answer
-def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = None) -> str:
+def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = None) -> tuple[str | Iterator[str], list[str]]:
     dated_system_prompt = SYSTEM_PROMPT.format(current_date=date.today().strftime("%B %d, %Y"))
     
     intent, park_codes, needs_weather = resolve_route(query, last_park_codes)
@@ -183,12 +188,7 @@ def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = Non
             park_codes,
         )
 
-    try:
-        answer = generate_response(query, all_chunks, park_codes, dated_system_prompt, history, weather_context)
-    except Exception as e:
-        print(f"Chain error occurred: {e}")
-        return "Sorry, I'm having trouble generating a response right now. Please try again.", park_codes
-    
+    answer = generate_response(query, all_chunks, park_codes, dated_system_prompt, history, weather_context)
     return answer, park_codes
 
 if __name__ == "__main__":
