@@ -13,6 +13,11 @@ WELCOME_MESSAGE = (
     "Which park are you interested in?"
 )
 
+def process_stream(stream, collected):
+    for chunk in stream:
+        collected.append(chunk)
+        yield chunk.replace("$", "\\$")
+
 st.set_page_config(page_title="Roam - Plan Your Next Adventure", page_icon="static/favicon.png")
 
 col1, col2, col3 = st.columns([1, 4, 1])
@@ -59,7 +64,13 @@ if query:
                 history=st.session_state.messages[:-1],
                 last_park_codes=st.session_state.last_park_codes,
             )
-        st.markdown(response.replace("$", "\\$"))
+
+        if isinstance(response, str):
+            st.markdown(response.replace("$", "\\$"))
+        else:
+            collected = []
+            st.write_stream(process_stream(response, collected))
+            response = "".join(collected)
     
     st.session_state.messages.append({"role": "assistant", "content": response})
     if park_codes:
