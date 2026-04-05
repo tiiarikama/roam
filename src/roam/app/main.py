@@ -39,7 +39,10 @@ if "last_park_codes" not in st.session_state:
 # displays chat history
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+        if message["role"] == "assistant":  
+            st.markdown(message["content"].replace("$", "\\$")) # fixes Streamlit LaTex math rendering issue in responses containing $...$
+        else:
+            st.markdown(message["content"])
 
 # handles user query
 query = st.chat_input("Ask about a national park...")
@@ -56,7 +59,7 @@ if query:
                 history=st.session_state.messages[:-1],
                 last_park_codes=st.session_state.last_park_codes,
             )
-        st.markdown(response)
+        st.markdown(response.replace("$", "\\$"))
     
     st.session_state.messages.append({"role": "assistant", "content": response})
     if park_codes:
