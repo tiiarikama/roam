@@ -71,7 +71,7 @@ def chunk_alerts(alerts: list[dict], park_code: str, park_name: str) -> list[dic
         if not alert.get("title") and not alert.get("description"):
             continue
 
-        text = f"[{alert.get("category", "Alert")}] {alert.get("title", "")}\n{_strip_html(alert.get("description", ""))}"
+        text = f"Park Alert - [{alert.get("category", "Alert")}] {alert.get("title", "")}\n{_strip_html(alert.get("description", ""))}"
 
         if alert.get("url"):
             text += f"\nMore info at: {alert["url"]}"
