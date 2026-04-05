@@ -1,0 +1,263 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:wght@600;700&display=swap");
+
+/* ── Global typography ── */
+html,
+body,
+[class*="css"] {
+  font-family: "DM Sans", sans-serif;
+}
+
+/* ── Hide Streamlit defaults ── */
+#MainMenu {
+  visibility: hidden;
+}
+footer {
+  visibility: hidden;
+}
+header {
+  visibility: hidden;
+}
+
+/* ── Animated gradient accent bar ── */
+.stApp::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    #e07b54,
+    #f4a87d,
+    #e8956a,
+    #d46a45,
+    #e07b54
+  );
+  background-size: 300% 100%;
+  animation: shimmer 6s ease-in-out infinite;
+  z-index: 999;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ── Main app background ── */
+.stApp {
+  background: linear-gradient(175deg, #fff7f0 0%, #fff9f4 40%, #fff1e6 100%);
+}
+
+/* ── Sidebar ── */
+section[data-testid="stSidebar"] {
+  background: linear-gradient(195deg, #ffe8d6 0%, #fddcc5 50%, #f8d0b8 100%);
+  border-right: none;
+  box-shadow: 4px 0 24px rgba(224, 123, 84, 0.08);
+}
+
+section[data-testid="stSidebar"] .stButton > button {
+  background: linear-gradient(135deg, #e07b54 0%, #ee9470 100%);
+  color: #fff8f4;
+  border: none;
+  border-radius: 12px;
+  padding: 0.65rem 1.2rem;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(224, 123, 84, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+section[data-testid="stSidebar"] .stButton > button:hover {
+  background: linear-gradient(135deg, #cc6a45 0%, #e07b54 100%);
+  color: #fff8f4;
+  border: none;
+  box-shadow: 0 6px 20px rgba(224, 123, 84, 0.4);
+  transform: translateY(-2px);
+}
+
+section[data-testid="stSidebar"] .stButton > button:active {
+  transform: translateY(0px);
+  box-shadow: 0 2px 8px rgba(224, 123, 84, 0.3);
+}
+
+/* ── Chat message containers ── */
+.stChatMessage {
+  border-radius: 16px;
+  padding: 1.1rem 1.4rem;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* User messages */
+.stChatMessage:has([data-testid="chatAvatarIcon-user"]) {
+  background: #ffead8 !important;
+  background-color: #ffead8 !important;
+  border: 1px solid #fddcc5;
+  box-shadow:
+    0 2px 8px rgba(224, 123, 84, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Assistant messages */
+.stChatMessage:has([data-testid="chatAvatarIcon-assistant"]) {
+  background: rgba(255, 255, 255, 0.75) !important;
+  background-color: rgba(255, 255, 255, 0.75) !important;
+  border: 1px solid rgba(253, 220, 197, 0.5);
+  box-shadow:
+    0 2px 8px rgba(224, 123, 84, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* ── Chat avatar styling ── */
+.stChatMessage [data-testid="chatAvatarIcon-assistant"] {
+  background: linear-gradient(135deg, #e07b54, #ee9470);
+  box-shadow: 0 2px 8px rgba(224, 123, 84, 0.3);
+}
+
+.stChatMessage [data-testid="chatAvatarIcon-user"] {
+  background: linear-gradient(135deg, #b84933, #d05a44);
+  box-shadow: 0 2px 8px rgba(184, 73, 51, 0.3);
+}
+
+/* ── Chat input ── */
+.stChatInput > div {
+  border-radius: 16px;
+  border: 1.5px solid rgba(253, 210, 185, 0.6);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 4px 16px rgba(224, 123, 84, 0.06);
+}
+
+.stChatInput > div:focus-within {
+  border-color: #e07b54;
+  box-shadow:
+    0 4px 20px rgba(224, 123, 84, 0.12),
+    0 0 0 3px rgba(224, 123, 84, 0.08);
+}
+
+.stChatInput textarea {
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.95rem;
+}
+
+/* ── Spinner ── */
+.stSpinner > div {
+  border-top-color: #e07b54 !important;
+}
+
+/* ── Logo area ── */
+.stImage {
+  margin-bottom: 0.25rem;
+}
+
+/* ── Markdown content styling ── */
+.stChatMessage p {
+  line-height: 1.7;
+  color: #3d2b22;
+}
+
+.stChatMessage li {
+  line-height: 1.65;
+  margin-bottom: 0.3rem;
+}
+
+.stChatMessage strong {
+  color: #2e1f18;
+  font-weight: 600;
+}
+
+.stChatMessage h3 {
+  color: #d46a45;
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin-top: 1.2rem;
+  letter-spacing: -0.01em;
+}
+
+.stChatMessage h4 {
+  color: #cc6a45;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+/* ── Scrollbar styling ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f5d0b8, #e07b54);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #e07b54, #cc6a45);
+}
+
+/* ── Links ── */
+a {
+  color: #e07b54;
+  text-decoration: none;
+  background-image: linear-gradient(#e07b54, #e07b54);
+  background-size: 0% 1px;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s ease;
+}
+
+a:hover {
+  color: #cc6a45;
+  background-image: linear-gradient(#cc6a45, #cc6a45);
+  background-size: 100% 1px;
+}
+
+/* ── Code blocks in responses ── */
+.stChatMessage code {
+  background-color: rgba(255, 232, 214, 0.5);
+  color: #b85c34;
+  padding: 0.2rem 0.45rem;
+  border-radius: 6px;
+  font-size: 0.85em;
+  border: 1px solid rgba(253, 220, 197, 0.4);
+}
+
+.stChatMessage pre {
+  background: rgba(255, 241, 230, 0.5);
+  border: 1px solid rgba(253, 220, 197, 0.5);
+  border-radius: 12px;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+}
+
+/* ── Horizontal rules in responses ── */
+.stChatMessage hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #f5d0b8, transparent);
+  margin: 1.2rem 0;
+}

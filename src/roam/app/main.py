@@ -1,4 +1,5 @@
 import streamlit as st
+from pathlib import Path
 from roam.rag.chain import ask
 from roam.config import PARKS_BY_STATE
 
@@ -13,12 +14,22 @@ WELCOME_MESSAGE = (
     "Which park are you interested in?"
 )
 
+def load_css():
+    css_path = Path(__file__).parent.parent.parent.parent / "static" / "style.css"
+    st.markdown(f"<style>{css_path.read_text()}</style>", unsafe_allow_html=True)
+
 def process_stream(stream, collected):
     for chunk in stream:
         collected.append(chunk)
         yield chunk.replace("$", "\\$")
 
-st.set_page_config(page_title="Roam - Plan Your Next Adventure", page_icon="static/favicon.png")
+st.set_page_config(
+    page_title="Roam - Plan Your Next Adventure", 
+    page_icon="static/favicon.png",
+    layout="centered"
+)
+
+load_css()
 
 col1, col2, col3 = st.columns([1, 4, 1])
 with col2:
