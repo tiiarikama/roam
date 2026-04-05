@@ -1,7 +1,7 @@
 import psycopg2
 from openai import OpenAI
 from roam.config import (
-    OPENAI_API_KEY, EMBEDDING_MODEL, EMBEDDING_DIMENSIONS, TOP_K_RESULTS
+    OPENAI_API_KEY, EMBEDDING_MODEL, EMBEDDING_DIMENSIONS, TOP_K_RESULTS, SIMILARITY_THRESHOLD
 )
 from roam.ingestion.schema import connect
 
@@ -32,10 +32,11 @@ def retrieve(user_query: str, park_code: str = None, top_k: int = TOP_K_RESULTS)
                         1 - (embedding <=> %s::vector) AS similarity
                     FROM park_chunks
                     WHERE park_code = %s
+                        AND 1 - (embedding <=> %s::vector) > %s
                     ORDER BY embedding <=> %s::vector
                     LIMIT %s
         """
-        params = [query_embedding, park_code, query_embedding, top_k]
+        params = [query_embedding, park_code, query_embedding, SIMILARITY_THRESHOLD, query_embedding, top_k]
     else:
         sql_query = """
                     SELECT
@@ -46,10 +47,11 @@ def retrieve(user_query: str, park_code: str = None, top_k: int = TOP_K_RESULTS)
                         metadata,
                         1 - (embedding <=> %s::vector) AS similarity
                     FROM park_chunks
+                    WHERE 1 - (embedding <=> %s::vector) > %s
                     ORDER BY embedding <=> %s::vector
                     LIMIT %s
         """
-        params = [query_embedding, query_embedding, top_k]
+        params = [query_embedding, query_embedding, SIMILARITY_THRESHOLD, query_embedding, top_k]
 
     connection = connect()
     try:
