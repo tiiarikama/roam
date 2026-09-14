@@ -101,7 +101,8 @@ roam/
 │   └── zion.md
 ├── src/
 │   └── roam/
-│       ├── config.py              # API keys, model params, park metadata
+│       ├── config.py              # model params, retrieval tuning, park metadata
+        ├── settings.py            # environment: API keys, database URL
 │       ├── app/
 │       │   └── main.py            # Streamlit chat interface
 │       ├── ingestion/

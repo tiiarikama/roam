@@ -1,15 +1,13 @@
-from dotenv import load_dotenv
 from collections import defaultdict
-import os
 
-load_dotenv()
+from roam.settings import settings
 
 # db
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = settings.database_url
 
 # API keys
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-NPS_API_KEY = os.getenv("NPS_API_KEY")
+OPENAI_API_KEY = settings.openai_api_key.get_secret_value()
+NPS_API_KEY = settings.nps_api_key.get_secret_value()
 
 # models
 EMBEDDING_MODEL = 'text-embedding-3-small'
