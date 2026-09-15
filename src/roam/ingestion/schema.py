@@ -1,8 +1,7 @@
-import os
 import psycopg2
-from dotenv import load_dotenv
 
-load_dotenv()
+from roam.config import DATABASE_URL
+
 
 CREATE_EXTENSION = "CREATE EXTENSION IF NOT EXISTS vector;"
 
@@ -40,11 +39,11 @@ CREATE_INDEXES = [
 ]
 
 def connect():
-    return psycopg2.connect(os.getenv("DATABASE_URL"))
+    return psycopg2.connect(DATABASE_URL)
 
 def setup_schema():
     connection = connect()
-    print(f"Connected to: {os.getenv('DATABASE_URL')}")
+    print(f"Connected to: {connection.info.host}:{connection.info.port}/{connection.info.dbname}")
 
     try:
         with connection.cursor() as cur:
