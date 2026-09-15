@@ -60,7 +60,8 @@ Required environment variables:
 
 ```bash
 createdb roam_dev
-python -m roam.ingestion.schema
+python -m roam.ingestion.schema # creates knowledge-base tables
+alembic upgrade head # creates app tables
 ```
 
 ### 5. Run ingestion
@@ -86,7 +87,10 @@ streamlit run src/roam/app/main.py
 ```
 roam/
 ├── .env.example
+├── alembic.ini                    # Alembic configuration
 ├── pyproject.toml
+├── migrations/                    # Alembic migrations for the app tables
+│   └── versions/
 ├── static/                        # Logo, favicon, and styles
 ├── parks/                         # Hand-curated markdown park documents
 │   ├── acad.md
@@ -102,11 +106,13 @@ roam/
 ├── src/
 │   └── roam/
 │       ├── config.py              # model params, retrieval tuning, park metadata
-        ├── settings.py            # environment: API keys, database URL
+│       ├── settings.py            # environment: API keys, database URL
 │       ├── app/
 │       │   └── main.py            # Streamlit chat interface
+│       ├── db/
+│       │   └── tables.py          # App tables: users, conversations, messages
 │       ├── ingestion/
-│       │   ├── schema.py          # DB schema and connection helpers
+│       │   ├── schema.py          # Knowledge base schema and connection helper
 │       │   ├── fetcher.py         # NPS API client
 │       │   ├── chunker.py         # Domain-specific chunking for API data
 │       │   ├── embedder.py        # Batched OpenAI embedding

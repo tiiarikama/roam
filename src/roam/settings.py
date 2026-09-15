@@ -20,6 +20,18 @@ class Settings(BaseSettings):
     openai_api_key: SecretStr
     nps_api_key: SecretStr
 
+    @property
+    def sqlalchemy_url(self) -> str:
+        if self.database_url.startswith('postgresql://'):
+            stripped_url = self.database_url.removeprefix('postgresql://')
+            return 'postgresql+psycopg://' + stripped_url
+        elif self.database_url.startswith('postgres://'):
+            stripped_url = self.database_url.removeprefix('postgres://')
+            return 'postgresql+psycopg://' + stripped_url
+        else:
+            return self.database_url
+
+
 
 # reads and validates the environment once per process
 @lru_cache
