@@ -1,15 +1,14 @@
 import psycopg2
-from openai import OpenAI
+
 from roam.config import (
-    OPENAI_API_KEY, EMBEDDING_MODEL, EMBEDDING_DIMENSIONS, TOP_K_RESULTS, SIMILARITY_THRESHOLD
+    EMBEDDING_MODEL, EMBEDDING_DIMENSIONS, TOP_K_RESULTS, SIMILARITY_THRESHOLD
 )
 from roam.ingestion.schema import connect
-
-client = OpenAI(api_key=OPENAI_API_KEY)
+from roam.llm import sync_client
 
 # embeds a user query using the same model as the stored chunks in knowledge base
 def embed_query(user_query: str) -> list[float]:
-    response = client.embeddings.create(
+    response = sync_client.embeddings.create(
         model=EMBEDDING_MODEL,
         input=[user_query],
         dimensions=EMBEDDING_DIMENSIONS,
