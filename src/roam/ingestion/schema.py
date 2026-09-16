@@ -54,7 +54,7 @@ def setup_schema():
 
     print("Schema created successfully")
 
-def clear_park_chunks(connection: psycopg2.extensions.connection, park_code: str):
+def clear_park_chunks(connection: Connection, park_code: str):
     connection.execute(
         text("DELETE FROM park_chunks WHERE park_code = :park_code"), 
         {"park_code": park_code},
