@@ -15,6 +15,7 @@ class Settings(BaseSettings):
 
     # db
     database_url: str
+    db_pool_size: int = 10
 
     # API keys
     openai_api_key: SecretStr
