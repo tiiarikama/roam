@@ -1,18 +1,21 @@
 import json
 import sys # for individual md file ingestion
-import psycopg2
+
+from sqlalchemy import text, Connection
+
 from roam.config import TARGET_PARKS
-from roam.ingestion.schema import connect, clear_park_chunks
+from roam.ingestion.schema import clear_park_chunks
+from roam.db.engine import sync_engine, format_vector
 from roam.ingestion.fetcher import fetch_all_park_data
 from roam.ingestion.chunker import chunk_all
 from roam.ingestion.md_loader import load_markdown_chunks
 from roam.ingestion.embedder import embed_chunks
 
 # inserts or updates a park record in the parks table
-def upsert_park(connection, park_info: dict):
+def upsert_park(connection: Connection, park_info: dict):
     sql_query = """
                 INSERT INTO parks (park_code, name, description, states, designation)
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (:park_code, :name, :description, :states, :designation)
                 ON CONFLICT (park_code) DO UPDATE SET
                     name = EXCLUDED.name,
                     description = EXCLUDED.description,
@@ -20,32 +23,35 @@ def upsert_park(connection, park_info: dict):
                     designation = EXCLUDED.designation
     """
 
-    with connection.cursor() as cur:
-        cur.execute(sql_query, (
-            park_info["park_code"],
-            park_info["name"],
-            park_info["description"],
-            park_info["states"],
-            park_info["designation"]
-        ))
+    connection.execute(text(sql_query), {
+        "park_code": park_info["park_code"],
+        "name": park_info["name"],
+        "description": park_info["description"],
+        "states": park_info["states"],
+        "designation": park_info["designation"]
+    })
 
 # bulk inserts embedded chunks into park_chunks table
 def insert_chunks(connection, chunks: list[dict]):
+    if not chunks:
+        return
+    
     sql_query = """
                 INSERT INTO park_chunks (park_code, park_name, content_type, chunk_text, metadata, embedding)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                VALUES (:park_code, :park_name, :content_type, :chunk_text, CAST(:metadata AS jsonb), CAST(:embedding AS vector))
     """
 
-    with connection.cursor() as cur:
-        for chunk in chunks:
-            cur.execute(sql_query, (
-                chunk["park_code"],
-                chunk["park_name"],
-                chunk["content_type"],
-                chunk["chunk_text"],
-                json.dumps(chunk["metadata"]),
-                chunk["embedding"],   
-            ))
+    connection.execute(text(sql_query), [
+        {
+            "park_code": chunk["park_code"],
+            "park_name": chunk["park_name"],
+            "content_type": chunk["content_type"],
+            "chunk_text": chunk["chunk_text"],
+            "metadata": json.dumps(chunk["metadata"]),
+            "embedding": format_vector(chunk["embedding"]),
+        }
+        for chunk in chunks
+    ])
 
 # full ingestion pipeline for a single park
 def run_park(park_code: str):
@@ -65,15 +71,12 @@ def run_park(park_code: str):
         embedded_chunks = embed_chunks(all_chunks)
 
         #store
-        connection = connect()
-        try:
+        with sync_engine.begin() as connection:
             clear_park_chunks(connection, park_code)
             upsert_park(connection, park_data["park_info"])
             insert_chunks(connection, embedded_chunks)
-            connection.commit()
-            print(f"Stored {len(embedded_chunks)} chunks for {park_code}")
-        finally:
-            connection.close()
+
+        print(f"Stored {len(embedded_chunks)} chunks for {park_code}")
     except Exception as e:
         print(f"Error occurred processing {park_code}: {e}")
         raise
@@ -90,6 +93,7 @@ def run_all():
             success.append(park_code)
         except Exception as e:
             failed.append(park_code)
+            print(e)
 
     print(f"\nIngestion complete.")
     print(f"Success: {success}")

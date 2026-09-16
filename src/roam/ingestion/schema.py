@@ -1,7 +1,8 @@
 import psycopg2
+from sqlalchemy import Connection, text
 
 from roam.config import DATABASE_URL
-
+from roam.db.engine import sync_engine
 
 CREATE_EXTENSION = "CREATE EXTENSION IF NOT EXISTS vector;"
 
@@ -42,27 +43,22 @@ def connect():
     return psycopg2.connect(DATABASE_URL)
 
 def setup_schema():
-    connection = connect()
-    print(f"Connected to: {connection.info.host}:{connection.info.port}/{connection.info.dbname}")
+    print(f"Connected to: {sync_engine.url.host}:{sync_engine.url.port}/{sync_engine.url.database}")
 
-    try:
-        with connection.cursor() as cur:
-            cur.execute(CREATE_EXTENSION)
-            cur.execute(CREATE_PARKS_TABLE)
-            cur.execute(CREATE_CHUNKS_TABLE)
-            for index_sql in CREATE_INDEXES:
-                cur.execute(index_sql)
+    with sync_engine.begin() as connection:
+        connection.execute(text(CREATE_EXTENSION))
+        connection.execute(text(CREATE_PARKS_TABLE))
+        connection.execute(text(CREATE_CHUNKS_TABLE))
+        for index_sql in CREATE_INDEXES:
+            connection.execute(text(index_sql))
 
-        connection.commit()
-        print("Schema created successfully")
-    finally:
-        connection.close()
+    print("Schema created successfully")
 
 def clear_park_chunks(connection: psycopg2.extensions.connection, park_code: str):
-    with connection.cursor() as cur:
-        cur.execute(
-            "DELETE FROM park_chunks WHERE park_code = %s", (park_code,)
-        )
+    connection.execute(
+        text("DELETE FROM park_chunks WHERE park_code = :park_code"), 
+        {"park_code": park_code},
+    )
 
 if __name__ == '__main__':
     setup_schema()
