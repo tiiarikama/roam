@@ -6,7 +6,6 @@ from roam.settings import settings
 DATABASE_URL = settings.database_url
 
 # API keys
-OPENAI_API_KEY = settings.openai_api_key.get_secret_value()
 NPS_API_KEY = settings.nps_api_key.get_secret_value()
 
 # models

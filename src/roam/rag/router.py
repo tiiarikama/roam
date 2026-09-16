@@ -1,8 +1,8 @@
 import json
-from openai import OpenAI
-from roam.config import OPENAI_API_KEY, LLM_MODEL, TARGET_PARKS, PARK_METADATA, INTENT_CATEGORIES
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+from roam.config import LLM_MODEL, TARGET_PARKS, PARK_METADATA, INTENT_CATEGORIES
+from roam.llm import sync_client
+
 
 ROUTER_PROMPT = """
 You are a query router for a national parks trip planning assistant. Given a user question, 
@@ -118,7 +118,7 @@ def route_query(query: str, last_park_codes: list[str] = None) -> dict:
         )
 
     try:
-        response = client.chat.completions.create(
+        response = sync_client.chat.completions.create(
             model=LLM_MODEL,
             max_tokens=50,
             temperature=0,

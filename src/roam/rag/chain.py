@@ -1,13 +1,11 @@
-from openai import OpenAI
 from datetime import date
 from typing import Iterator
-from roam.config import OPENAI_API_KEY, LLM_MODEL, PARK_METADATA, PARKS_BY_STATE, TOP_K_GLOBAL
+
+from roam.config import LLM_MODEL, PARK_METADATA, PARKS_BY_STATE, TOP_K_GLOBAL
+from roam.llm import sync_client
 from roam.rag.retriever import retrieve
 from roam.rag.router import route_query
 from roam.weather.client import get_weather
-
-
-client = OpenAI(api_key=OPENAI_API_KEY)
 
 SYSTEM_PROMPT = """
 You are Roam, a helpful trip planning assistant for US national parks. 
@@ -120,7 +118,7 @@ def generate_response(query: str, chunks: list[dict], park_codes: list[str],
 
     messages.append({"role": "user", "content": f"{context_prompt}\n\nQuestion: {query}"})
 
-    stream = client.chat.completions.create(
+    stream = sync_client.chat.completions.create(
         model=LLM_MODEL,
         max_tokens=1024,
         messages=messages,
@@ -140,7 +138,7 @@ def generate_greeting(query: str, system_prompt: str, history: list[dict] = None
 
     messages.append({"role": "user", "content": query})
 
-    response = client.chat.completions.create(
+    response = sync_client.chat.completions.create(
         model=LLM_MODEL,
         max_tokens=256,
         messages=messages,

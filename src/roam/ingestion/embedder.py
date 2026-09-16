@@ -1,9 +1,8 @@
 import time
 import math
-from openai import OpenAI
-from roam.config import OPENAI_API_KEY, EMBEDDING_MODEL, EMBEDDING_DIMENSIONS
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+from roam.config import EMBEDDING_MODEL, EMBEDDING_DIMENSIONS
+from roam.llm import sync_client
 
 BATCH_SIZE = 100
 RATE_LIMIT_DELAY = 0.5
@@ -21,7 +20,7 @@ def embed_chunks(chunks: list[dict]) -> list[dict]:
         batch = chunks[i: i + BATCH_SIZE]
         texts = [chunk["chunk_text"] for chunk in batch]
 
-        response = client.embeddings.create(
+        response = sync_client.embeddings.create(
             model=EMBEDDING_MODEL,
             input=texts,
             dimensions=EMBEDDING_DIMENSIONS,

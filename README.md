@@ -107,9 +107,11 @@ roam/
 │   └── roam/
 │       ├── config.py              # model params, retrieval tuning, park metadata
 │       ├── settings.py            # environment: API keys, database URL
+│       ├── llm.py                 # Shared OpenAI client
 │       ├── app/
 │       │   └── main.py            # Streamlit chat interface
 │       ├── db/
+│       │   ├── engine.py          # SQLAlchemy engine and vector helper
 │       │   └── tables.py          # App tables: users, conversations, messages
 │       ├── ingestion/
 │       │   ├── schema.py          # Knowledge base schema and connection helper
