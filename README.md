@@ -114,7 +114,7 @@ roam/
 │       │   ├── engine.py          # SQLAlchemy engine and vector helper
 │       │   └── tables.py          # App tables: users, conversations, messages
 │       ├── ingestion/
-│       │   ├── schema.py          # Knowledge base schema and connection helper
+│       │   ├── schema.py          # Knowledge base schema (parks, park_chunks)
 │       │   ├── fetcher.py         # NPS API client
 │       │   ├── chunker.py         # Domain-specific chunking for API data
 │       │   ├── embedder.py        # Batched OpenAI embedding

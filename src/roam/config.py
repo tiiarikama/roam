@@ -2,9 +2,6 @@ from collections import defaultdict
 
 from roam.settings import settings
 
-# db
-DATABASE_URL = settings.database_url
-
 # API keys
 NPS_API_KEY = settings.nps_api_key.get_secret_value()
 
