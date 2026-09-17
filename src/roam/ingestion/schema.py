@@ -1,7 +1,5 @@
-import psycopg2
 from sqlalchemy import Connection, text
 
-from roam.config import DATABASE_URL
 from roam.db.engine import sync_engine
 
 CREATE_EXTENSION = "CREATE EXTENSION IF NOT EXISTS vector;"
@@ -38,9 +36,6 @@ CREATE_INDEXES = [
     "CREATE INDEX IF NOT EXISTS idx_chunks_metadata ON park_chunks USING GIN(metadata);",
     "CREATE INDEX IF NOT EXISTS idx_chunks_embedding ON park_chunks USING hnsw (embedding vector_cosine_ops);",
 ]
-
-def connect():
-    return psycopg2.connect(DATABASE_URL)
 
 def setup_schema():
     print(f"Connected to: {sync_engine.url.host}:{sync_engine.url.port}/{sync_engine.url.database}")

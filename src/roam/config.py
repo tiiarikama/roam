@@ -2,9 +2,6 @@ from collections import defaultdict
 
 from roam.settings import settings
 
-# db
-DATABASE_URL = settings.database_url
-
 # API keys
 NPS_API_KEY = settings.nps_api_key.get_secret_value()
 
@@ -22,6 +19,13 @@ INTENT_CATEGORIES = ("park_specific", "comparative", "general_parks", "greeting"
 TOP_K_RESULTS = 5
 TOP_K_GLOBAL = 10
 SIMILARITY_THRESHOLD = 0.3
+
+# generation & history
+MAX_HISTORY_MESSAGES = 10
+MAX_HISTORY_CHARS = 8000
+MAX_ANSWER_TOKENS = 1024
+MAX_GREETING_TOKENS = 256
+MAX_ROUTER_TOKENS = 120
 
 # NPS
 NPS_BASE_URL = "https://developer.nps.gov/api/v1"

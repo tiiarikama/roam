@@ -1,6 +1,6 @@
 import streamlit as st
 from pathlib import Path
-from roam.rag.chain import ask
+from roam.rag.chain import ask_sync
 from roam.config import PARKS_BY_STATE
 
 park_list = "\n".join(
@@ -18,10 +18,14 @@ def load_css():
     css_path = Path(__file__).parent.parent.parent.parent / "static" / "style.css"
     st.markdown(f"<style>{css_path.read_text()}</style>", unsafe_allow_html=True)
 
-def process_stream(stream, collected):
-    for chunk in stream:
-        collected.append(chunk)
-        yield chunk.replace("$", "\\$")
+def process_events(events, collected, status):
+    for event in events:
+        if event["type"] == "token":
+            collected.append(event["text"])
+            yield event["text"].replace("$", "\\$")
+        elif event["type"] == "error":
+            status["error"] = event["detail"]
+
 
 st.set_page_config(
     page_title="Roam - Plan Your Next Adventure", 
@@ -69,20 +73,24 @@ if query:
         st.markdown(query)
     
     with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
-            response, park_codes = ask(
-                query,
-                history=st.session_state.messages[:-1],
-                last_park_codes=st.session_state.last_park_codes,
-            )
+        events = ask_sync(
+            query,
+            history=st.session_state.messages[:-1],
+            last_park_codes=st.session_state.last_park_codes,
+        )
 
-        if isinstance(response, str):
-            st.markdown(response.replace("$", "\\$"))
-        else:
-            collected = []
-            st.write_stream(process_stream(response, collected))
-            response = "".join(collected)
-    
+        # meta always arrives first, after routing, retrieval and any weather lookup
+        with st.spinner("Thinking..."):
+            meta = next(events)
+
+        collected, status = [], {}
+        st.write_stream(process_events(events, collected, status))
+        response = "".join(collected)
+
+        if status.get("error"):
+            st.caption("Something went wrong generating this answer.")
+
     st.session_state.messages.append({"role": "assistant", "content": response})
-    if park_codes:
-        st.session_state.last_park_codes = park_codes
+
+    if meta["park_codes"]:
+        st.session_state.last_park_codes = meta["park_codes"]
