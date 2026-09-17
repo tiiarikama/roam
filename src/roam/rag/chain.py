@@ -1,11 +1,16 @@
+import asyncio
+import threading
+
 from datetime import date
 from typing import Iterator
+from collections.abc import AsyncIterator
 
-from roam.config import LLM_MODEL, PARK_METADATA, PARKS_BY_STATE, TOP_K_GLOBAL
-from roam.llm import sync_client
-from roam.rag.retriever import retrieve
+from roam.config import LLM_MODEL, PARK_METADATA, PARKS_BY_STATE, TOP_K_GLOBAL, MAX_ANSWER_TOKENS, MAX_GREETING_TOKENS, MAX_HISTORY_CHARS, MAX_HISTORY_MESSAGES
+from roam.llm import async_client
+from roam.rag.retriever import retrieve, embed_query
 from roam.rag.router import route_query
-from roam.weather.client import get_weather
+from roam.weather.client import get_weather_batch, WeatherReport
+from roam.db.engine import async_engine
 
 SYSTEM_PROMPT = """
 You are Roam, a helpful trip planning assistant for US national parks. 
@@ -32,6 +37,18 @@ Today's date is {current_date}. Use this to provide seasonally appropriate advic
 warn about current seasonal closures or conditions, and suggest the best activities for this time of year.
 """
 
+SOURCE_PREVIEW_CHARS = 280
+
+NO_CONTEXT_REPLY = (
+    "Unfortunately, I don't have enough information to answer that question. "
+    "Check nps.gov for the most current details."
+)
+
+GENERATION_ERROR_REPLY = "Sorry, I'm having trouble right now. Please try again."
+
+def dated_system_prompt() -> str:
+    return SYSTEM_PROMPT.format(current_date=date.today().strftime("%B %d, %Y"))
+
 # formats retrieved chunks into a context string for prompting
 def build_context(chunks: list[dict]) -> str:
     sections = []
@@ -39,27 +56,65 @@ def build_context(chunks: list[dict]) -> str:
     for chunk in chunks:
         section = chunk["metadata"].get("section", chunk["content_type"])
         sections.append(f"[{section}]\n{chunk["chunk_text"]}")
-    
+
     return "\n\n---\n\n".join(sections)
 
-def fetch_weather_context(park_codes: list[str]) -> str | None:
-    weather_parts = []
 
-    for code in park_codes:
-        weather = get_weather(code)
+# compact descriptors of the retrieved chunks, for the UI source panel
+def build_sources(chunks: list[dict]) -> list[dict]:
+    return [
+        {
+            "park_code": chunk["park_code"],
+            "park_name": chunk["park_name"],
+            "content_type": chunk["content_type"],
+            "section": chunk["metadata"].get("section", chunk["content_type"]),
+            "similarity": chunk["similarity"],
+            "preview": chunk["chunk_text"][:SOURCE_PREVIEW_CHARS],
+        }
+        for chunk in chunks
+    ]
 
-        if weather:
-            weather_parts.append(weather)
 
-    return "\n\n".join(weather_parts) if weather_parts else None
+# trims conversation history to a bounded prompt budget, opening on a user turn
+def window_history(history: list[dict] | None) -> list[dict]:
+    if not history:
+        return []
+
+    windowed = [
+        {"role": message["role"], "content": message["content"]}
+        for message in history[-MAX_HISTORY_MESSAGES:]
+    ]
+
+    while windowed and sum(len(message["content"]) for message in windowed) > MAX_HISTORY_CHARS:
+        windowed.pop(0)
+
+    while windowed and windowed[0]["role"] != "user":
+        windowed.pop(0)
+
+    return windowed
+
+
+# the canned reply listing every park covered
+def off_topic_reply() -> str:
+    park_list = "\n".join(
+        f"- {state}: {', '.join(parks)}" for state, parks in PARKS_BY_STATE.items()
+    )
+
+    return (
+        "Your question doesn't seem to be about any US national parks. "
+        "I'd be happy to help you plan a trip to any of these destinations:\n\n"
+        f"{park_list}\n\n"
+        "Which park would you like to know more about?"
+    )
+
 
 # resolves intent and park codes, applying conversation context fallbacks
-def resolve_route(query: str, last_park_codes: list[str] = None) -> tuple[str, list[str], bool]:
-    route = route_query(query, last_park_codes)
+async def resolve_route(query: str, last_park_codes: list[str] = None) -> tuple[str, list[str], bool]:
+    route = await route_query(query, last_park_codes)
     intent = route["intent"]
     park_codes = route["parks"]
     needs_weather = route.get("needs_weather", False)
-        
+
     if intent == "park_specific" and not park_codes:
         if last_park_codes:
             park_codes = last_park_codes
@@ -72,34 +127,41 @@ def resolve_route(query: str, last_park_codes: list[str] = None) -> tuple[str, l
 
     return intent, park_codes, needs_weather
 
-# retrieves chunks based on intent and park codes
-def retrieve_chunks(query: str, intent: str, park_codes: list[str]) -> list[dict]:
-    if intent == "park_specific":
+
+# retrieves chunks based on intent and park codes, embedding the query once
+async def retrieve_chunks(query: str, intent: str, park_codes: list[str]) -> list[dict]:
+    if intent not in ("park_specific", "comparative", "general_parks"):
+        return []
+
+    query_embedding = await embed_query(query)
+
+    async with async_engine.connect() as conn:
+        if not park_codes:
+            return await retrieve(conn, query_embedding, top_k=TOP_K_GLOBAL)
+
         chunks = []
-        for code in park_codes:
-            chunks.extend(retrieve(query, park_code=code))
+
+        for park_code in park_codes:
+            chunks.extend(await retrieve(conn, query_embedding, park_code=park_code))
+
         return chunks
-    elif intent in ("comparative", "general_parks"):
-        if park_codes:
-            chunks = []
 
-            for code in park_codes:
-                chunks.extend(retrieve(query, park_code=code))
-            return chunks
-        else:
-            return retrieve(query, top_k=TOP_K_GLOBAL)
-    return []
 
-def generate_response(query: str, chunks: list[dict], park_codes: list[str],
-                      system_prompt: str, history: list[dict] = None, weather_context: str = None):
+# system prompt, windowed history, then context fused into the final user message only
+def build_messages(query: str, chunks: list[dict], park_codes: list[str],
+                   history: list[dict] = None,
+                   weather_reports: list[WeatherReport] = None) -> list[dict]:
     if park_codes:
-        park_names = ", ".join(PARK_METADATA[code]["name"] for code in park_codes)
+        park_names = ", ".join(
+            PARK_METADATA[code]["name"] for code in park_codes if code in PARK_METADATA
+        )
     else:
         park_names = "US National Parks"
 
     context = build_context(chunks)
 
-    if weather_context:
+    if weather_reports:
+        weather_context = "\n\n".join(report.prompt_text for report in weather_reports)
         context = f"{weather_context}\n\n--\n\n{context}"
 
     context_prompt = f"""
@@ -111,98 +173,168 @@ def generate_response(query: str, chunks: list[dict], park_codes: list[str],
     Answer only based on the information provided above.
     """
 
-    messages = [{"role": "system", "content": system_prompt}]
-
-    if history:
-        messages.extend(history)
-
+    messages = [{"role": "system", "content": dated_system_prompt()}]
+    messages.extend(window_history(history))
     messages.append({"role": "user", "content": f"{context_prompt}\n\nQuestion: {query}"})
 
-    stream = sync_client.chat.completions.create(
+    return messages
+
+
+# streams answer text from the model
+async def stream_completion(messages: list[dict], max_tokens: int) -> AsyncIterator[str]:
+    stream = await async_client.chat.completions.create(
         model=LLM_MODEL,
-        max_tokens=1024,
+        max_tokens=max_tokens,
         messages=messages,
         stream=True,
     )
 
-    for chunk in stream:
+    async for chunk in stream:
+        if not chunk.choices:
+            continue
+
         content = chunk.choices[0].delta.content
+
         if content:
             yield content
 
-def generate_greeting(query: str, system_prompt: str, history: list[dict] = None) -> str:
-    messages = [{"role": "system", "content": system_prompt}]
 
-    if history:
-        messages.extend(history)
+# streams tokens, turning a mid-stream failure into an error event without losing emitted text
+async def _stream_or_error(messages: list[dict], max_tokens: int) -> AsyncIterator[dict]:
+    emitted_any = False
 
-    messages.append({"role": "user", "content": query})
+    try:
+        async for content in stream_completion(messages, max_tokens):
+            emitted_any = True
+            yield {"type": "token", "text": content}
+    except Exception as error:
+        print(f"Generation error: {error}")
 
-    response = sync_client.chat.completions.create(
-        model=LLM_MODEL,
-        max_tokens=256,
-        messages=messages,
-    )
+        if not emitted_any:
+            yield {"type": "token", "text": GENERATION_ERROR_REPLY}
 
-    return response.choices[0].message.content
+        yield {"type": "error", "detail": "generation_failed"}
+        return
 
-# full RAG chain: detect query intent and park codes -> retrieve relevant chunks -> generate answer
-def ask(query: str, history: list[dict] = None, last_park_codes: list[str] = None) -> tuple[str | Iterator[str], list[str]]:
-    dated_system_prompt = SYSTEM_PROMPT.format(current_date=date.today().strftime("%B %d, %Y"))
-    
-    intent, park_codes, needs_weather = resolve_route(query, last_park_codes)
+    yield {"type": "done"}
 
+
+# full RAG chain: route -> retrieve -> generate, yielding meta -> token* -> done | error
+async def ask(query: str, history: list[dict] = None,
+              last_park_codes: list[str] = None) -> AsyncIterator[dict]:
+    try:
+        intent, park_codes, needs_weather = await resolve_route(query, last_park_codes)
+    except Exception as error:
+        print(f"Routing error: {error}")
+        yield {"type": "meta", "intent": "general_parks", "park_codes": [],
+               "sources": [], "weather": []}
+        yield {"type": "token", "text": GENERATION_ERROR_REPLY}
+        yield {"type": "error", "detail": "routing_failed"}
+        return
+
+    # greeting and off_topic never touch the knowledge base
     if intent == "greeting":
-        try:
-            answer = generate_greeting(query, dated_system_prompt, history)
-            return answer, last_park_codes or []
-        except Exception as e:
-            print(f"Chain error occurred: {e}")
-            return "Sorry, I'm having trouble right now. Please try again.", last_park_codes or []
+        yield {"type": "meta", "intent": intent, "park_codes": last_park_codes or [],
+               "sources": [], "weather": []}
 
+        messages = [{"role": "system", "content": dated_system_prompt()}]
+        messages.extend(window_history(history))
+        messages.append({"role": "user", "content": query})
+
+        async for event in _stream_or_error(messages, MAX_GREETING_TOKENS):
+            yield event
+
+        return
 
     if intent == "off_topic":
-        park_list = "\n".join(
-            f"- {state}: {', '.join(parks)}" for state, parks in PARKS_BY_STATE.items()
-        )
+        yield {"type": "meta", "intent": intent, "park_codes": [], "sources": [], "weather": []}
+        yield {"type": "token", "text": off_topic_reply()}
+        yield {"type": "done"}
+        return
 
-        return (
-            f"Your question doesn't seem to be about any US national parks. I'd be happy to help you plan a trip to any of these destinations:\n\n"
-            f"{park_list}\n\n"
-            "Which park would you like to know more about?",
-            [],
-        )
-    
-    all_chunks = retrieve_chunks(query, intent, park_codes)
+    chunks = await retrieve_chunks(query, intent, park_codes)
 
-    weather_context = None
+    weather_reports = []
     if needs_weather and park_codes:
-        weather_context = fetch_weather_context(park_codes)
-    
-    if not all_chunks:
-        return (
-            "Unfortunately, I don't have enough information to answer that question. "
-            "Check nps.gov for the most current details.",
-            park_codes,
-        )
+        weather_reports = await get_weather_batch(park_codes)
 
-    answer = generate_response(query, all_chunks, park_codes, dated_system_prompt, history, weather_context)
-    return answer, park_codes
+    yield {
+        "type": "meta",
+        "intent": intent,
+        "park_codes": park_codes,
+        "sources": build_sources(chunks),
+        "weather": [report.to_dict() for report in weather_reports],
+    }
+
+    if not chunks:
+        yield {"type": "token", "text": NO_CONTEXT_REPLY}
+        yield {"type": "done"}
+        return
+
+    messages = build_messages(query, chunks, park_codes, history, weather_reports)
+
+    async for event in _stream_or_error(messages, MAX_ANSWER_TOKENS):
+        yield event
+
+
+_loop: asyncio.AbstractEventLoop | None = None
+
+
+# one event loop for the whole process: pooled connections belong to the loop that opened them
+def _background_loop() -> asyncio.AbstractEventLoop:
+    global _loop
+
+    if _loop is None:
+        _loop = asyncio.new_event_loop()
+        threading.Thread(target=_loop.run_forever, name="roam-chain-loop", daemon=True).start()
+
+    return _loop
+
+
+# returns the next event, or None once the generator is exhausted
+async def _next_event(events: AsyncIterator[dict]) -> dict | None:
+    try:
+        return await events.__anext__()
+    except StopAsyncIteration:
+        return None
+
+
+# synchronous bridge over ask(), for Streamlit and scripts
+def ask_sync(query: str, history: list[dict] = None,
+             last_park_codes: list[str] = None) -> Iterator[dict]:
+    loop = _background_loop()
+    events = ask(query, history, last_park_codes)
+
+    try:
+        while True:
+            event = asyncio.run_coroutine_threadsafe(_next_event(events), loop).result()
+
+            if event is None:
+                return
+
+            yield event
+    finally:
+        asyncio.run_coroutine_threadsafe(events.aclose(), loop).result()
+
 
 if __name__ == "__main__":
     test_queries = [
         "What permits do I need to hike Half Dome?",
-        "Are there road closures at Yosemite right now?",
-        "Where can I camp in Yosemite Valley and how do I book?",
         "Which park is best for wildlife watching?",
-        "Compare Yosemite and Grand Canyon for hiking",
         "What's the best pizza in New York?",
     ]
 
     for query in test_queries:
         print(f"\nQ: {query}")
         print("-" * 60)
-        answer, parks = ask(query)
-        print(f"Parks: {parks}")
-        print(answer)
+
+        for event in ask_sync(query):
+            if event["type"] == "meta":
+                print(f"[intent={event['intent']} parks={event['park_codes']} "
+                      f"sources={len(event['sources'])} weather={len(event['weather'])}]")
+            elif event["type"] == "token":
+                print(event["text"], end="", flush=True)
+            elif event["type"] == "error":
+                print(f"\n[error: {event['detail']}]")
+
         print()

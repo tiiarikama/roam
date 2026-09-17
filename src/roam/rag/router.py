@@ -1,7 +1,8 @@
 import json
+import asyncio
 
-from roam.config import LLM_MODEL, TARGET_PARKS, PARK_METADATA, INTENT_CATEGORIES
-from roam.llm import sync_client
+from roam.config import LLM_MODEL, TARGET_PARKS, PARK_METADATA, INTENT_CATEGORIES, MAX_ROUTER_TOKENS
+from roam.llm import async_client
 
 
 ROUTER_PROMPT = """
@@ -99,11 +100,14 @@ ROUTER_RESPONSE_FORMAT = {
     },
 }
 
+FALLBACK_ROUTE = {
+    "intent": "general_parks",
+    "parks": [],
+    "needs_weather": False
+}
 
-# classifies query intent and detects relevant park(s)
-def route_query(query: str, last_park_codes: list[str] = None) -> dict:
+def build_router_prompt(last_park_codes=None) -> str:
     parks_list = "\n".join(f"- {code}: {data["name"]}" for code, data in PARK_METADATA.items())
-
     prompt = ROUTER_PROMPT.format(parks=parks_list)
 
     if last_park_codes:
@@ -117,10 +121,28 @@ def route_query(query: str, last_park_codes: list[str] = None) -> dict:
             f"clearly unrelated to national parks (e.g. 'give me a lasagna recipe')."
         )
 
+    return prompt
+
+def parse_route(content: str) -> dict:
+    result = json.loads(content)
+
+    result["parks"] = [code for code in result.get("parks", []) if code in TARGET_PARKS]
+    result.setdefault("needs_weather", False)
+
+    if result.get("intent") not in INTENT_CATEGORIES:
+        result["intent"] = "general_parks"
+
+    return result
+
+
+# classifies query intent and detects relevant park(s)
+async def route_query(query: str, last_park_codes: list[str] = None) -> dict:
+    prompt = build_router_prompt(last_park_codes)
+
     try:
-        response = sync_client.chat.completions.create(
+        response = await async_client.chat.completions.create(
             model=LLM_MODEL,
-            max_tokens=50,
+            max_tokens=MAX_ROUTER_TOKENS,
             temperature=0,
             messages=[
                 {
@@ -134,14 +156,14 @@ def route_query(query: str, last_park_codes: list[str] = None) -> dict:
             ],
             response_format=ROUTER_RESPONSE_FORMAT,
         )
-    except Exception as e:
-        print(f"Router error occurred: {e}")
-        return {"intent": "general_parks", "parks": []}
-    
-    result = json.loads(response.choices[0].message.content)
-    result["parks"] = [code for code in result["parks"] if code in TARGET_PARKS]
 
-    return result
+        return parse_route(response.choices[0].message.content)
+    except (json.JSONDecodeError, TypeError, KeyError) as error:
+        print(f"Router returned an unusable payload: {error}")
+        return dict(FALLBACK_ROUTE)
+    except Exception as error:
+        print(f"Router call failed: {error}")
+        return dict(FALLBACK_ROUTE)
 
 if __name__ == "__main__":
     test_queries = [
@@ -155,8 +177,11 @@ if __name__ == "__main__":
         "What's the best pizza in New York?",
     ]
 
-    for query in test_queries:
-        result = route_query(query)
-        print(f"Q: {query}")
-        print(f"   → intent: {result['intent']}, parks: {result['parks']}")
-        print()
+    async def main():
+        for query in test_queries:
+            result = await route_query(query)
+            print(f"Q: {query}")
+            print(f"   → intent: {result['intent']}, parks: {result['parks']}, weather: {result['needs_weather']}")
+            print()
+
+    asyncio.run(main())
